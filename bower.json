@@ -1,0 +1,22 @@
+{
+  "name": "programmable-matter",
+  "homepage": "https://github.com/maxklenk/programmable-matter",
+  "authors": [
+    "Max Klenk <max@klenk.biz>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Matter": "matter-js#^0.9.3"
+  }
+}
