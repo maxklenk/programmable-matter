@@ -1,4 +1,3 @@
-(function() {
 
   // Matter.js module aliases
   var Engine = Matter.Engine,
@@ -12,8 +11,11 @@
     world = engine.world;
 
   // create bodies
+  var moveables = [];
   var stack = Composites.stack(250, 255, 1, 6, 0, 0, function(x, y) {
-    return Bodies.rectangle(x, y, 30, 30);
+    var body = Bodies.rectangle(x, y, 30, 30);
+    moveables.push(body);
+    return body;
   });
 
   var catapult = Bodies.rectangle(400, 520, 320, 20, {  });
@@ -24,9 +26,7 @@
   var ball = Bodies.circle(560, 100, 50, { density: 0.005 });
   var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
 
-
-  // add all of the bodies to the world
-  World.add(world, [
+  var elements = [
     stack,
     catapult,
     catapult_stand_left,
@@ -34,10 +34,30 @@
     holder,
     ball,
     ground
-  ]);
+  ];
+  moveables.push(ball);
+  moveables.push(catapult);
+
+  // add all of the bodies to the world
+  World.add(world, elements);
 
 
   // run the engine
   Engine.run(engine);
 
-})();
+  // interactive
+  world.gravity.y = 0;
+
+  // pause movement of all elements
+  function togglePlay() {
+    world.gravity.y = (world.gravity.y + 1) % 2;
+
+    var isStatic = world.gravity.y === 0;
+    for (var i in moveables) {
+      moveables[i].isStatic = isStatic;
+    }
+
+    // This should do the trick, but it doesn't work
+    // http://brm.io/matter-js/docs/#property_timing.timeScale
+    // engine.timing.timeScale = 0;
+  }
