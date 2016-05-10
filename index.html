@@ -14,6 +14,7 @@
 		// Startup
 		//
 		var _isDown, _points, _strokes, _r, _g, _rc; // global variables
+
 		function onLoadEvent()
 		{
 			_points = new Array(); // point array for current stroke
@@ -132,6 +133,7 @@
 				{
 					var result = _r.Recognize(_strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
 					drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+          console.log(_strokes);
 				}
 				else
 				{
