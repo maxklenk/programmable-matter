@@ -13,6 +13,13 @@ function ShapeBuilder() {
     this.Height = height;
   }
 
+  function Circle(x, y, radius) // constructor
+  {
+    this.X = x;
+    this.Y = y;
+    this.Radius = radius;
+  }
+
   function Arrow(start, direction, magnitude)  // constructor
   {
     this.Start = start;
@@ -32,6 +39,20 @@ function ShapeBuilder() {
     var centerX = minX + (maxX - minX) / 2;
     var centerY = minY + (maxY - minY) / 2;
     return new Rectangle(centerX, centerY, maxX - minX, maxY - minY);
+  }
+
+  this.getCircle = function(strokes) {
+    var minX = +Infinity, maxX = -Infinity, minY = +Infinity, maxY = -Infinity;
+    for (var i = 0; i < strokes.length; i++) {
+      minX = Math.min(minX, strokes[i].X);
+      minY = Math.min(minY, strokes[i].Y);
+      maxX = Math.max(maxX, strokes[i].X);
+      maxY = Math.max(maxY, strokes[i].Y);
+    }
+    var centerX = minX + (maxX - minX) / 2;
+    var centerY = minY + (maxY - minY) / 2;
+    var radius = ((maxX - minX) / 2 + (maxY - minY) / 2) / 2;
+    return new Circle(centerX, centerY, radius);
   }
 
   this.getArrow = function(strokes) {

@@ -126,8 +126,16 @@ function mouseUpEvent(x, y, button) {
       var result = _r.Recognize(_strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
       drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
       var shapeBuilder = new ShapeBuilder();
-      var rectangle = shapeBuilder.getRectangle(_strokes[0]);
-      addRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+      switch (result.Name) {
+        case "Rectangle":
+          var rectangle = shapeBuilder.getRectangle(_strokes[0]);
+          addRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+          break;
+        case "Circle":
+          var circle = shapeBuilder.getCircle(_strokes[0]);
+          addCircle(circle.X, circle.Y, circle.Radius);
+      }
+
     }
     else
     {
