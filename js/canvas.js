@@ -11,6 +11,8 @@ function onLoadEvent() {
   _r = new NDollarRecognizer(document.getElementById('useBoundedRotationInvariance').checked);
 
   var canvas = document.getElementById('myCanvas');
+  canvas.setAttribute('height', 600);
+  canvas.setAttribute('width', 800);
   _g = canvas.getContext('2d');
   _g.lineWidth = 3;
   _g.font = "16px Gentilis";
@@ -20,8 +22,6 @@ function onLoadEvent() {
 
   _isDown = false;
 
-  document.getElementById('myCanvas').setAttribute('height', 600);
-  document.getElementById('myCanvas').setAttribute('width', 800);
 }
 
 function getCanvasRect(canvas) {
@@ -125,7 +125,9 @@ function mouseUpEvent(x, y, button) {
     {
       var result = _r.Recognize(_strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
       drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-      console.log(_strokes);
+      var shapeBuilder = new ShapeBuilder();
+      var rectangle = shapeBuilder.getRectangle(_strokes[0]);
+      addRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
     }
     else
     {
@@ -154,7 +156,7 @@ function rand(low, high) {
   return Math.floor((high - low + 1) * Math.random()) + low;
 }
 
-function round(n, d) { // round 'n' to 'd' decimals 
+function round(n, d) { // round 'n' to 'd' decimals
   d = Math.pow(10, d);
   return Math.round(n * d) / d
 }

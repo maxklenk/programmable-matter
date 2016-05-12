@@ -29,7 +29,9 @@ function ShapeBuilder() {
       maxX = Math.max(maxX, strokes[i].X);
       maxY = Math.max(maxY, strokes[i].Y);
     }
-    return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+    var centerX = minX + (maxX - minX) / 2;
+    var centerY = minY + (maxY - minY) / 2;
+    return new Rectangle(centerX, centerY, maxX - minX, maxY - minY);
   }
 
   this.getArrow = function(strokes) {
