@@ -1,14 +1,20 @@
 
   // Matter.js module aliases
   var Engine = Matter.Engine,
+    Render = Matter.Render,
     World = Matter.World,
     Bodies = Matter.Bodies,
     Composites = Matter.Composites,
     Constraint = Matter.Constraint;
 
   // create a Matter.js engine
-  var engine = Engine.create(document.getElementById('canvas-container')),
+  var engine = Engine.create(),
     world = engine.world;
+
+  var render = Render.create({
+    element: document.getElementById('canvas-container'),
+    engine: engine
+  });
 
   // create bodies
   var moveables = [];
@@ -44,6 +50,9 @@
 
   // run the engine
   Engine.run(engine);
+
+  // run the renderer
+  Render.run(render);
 
   // interactive
   world.gravity.y = 0;
