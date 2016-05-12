@@ -11,3 +11,8 @@ body {
 .drawable {
   text-align: center;
 }
+
+#myCanvas {
+  position: absolute;
+  background: none; 
+}
