@@ -72,3 +72,9 @@
     moveables.push(newRectangle);
     World.add(world, newRectangle);
   }
+  
+  function addCircle(x, y, width, height, options) {
+    var newCircle = Bodies.circle(x, y, width, height, options);
+    moveables.push(newCircle);
+    World.add(world, newCircle);
+  }
