@@ -47,6 +47,15 @@
   // add all of the bodies to the world
   World.add(world, elements);
 
+  // add mouse control
+  var Mouse = Matter.Mouse;
+  var mouse = Mouse.create(render.canvas);
+  var MouseConstraint = Matter.MouseConstraint;
+  var mouseConstraint = MouseConstraint.create(engine, {
+    element: render.canvas,
+    mouse: mouse
+  });
+  World.add(world, mouseConstraint);
 
   // run the engine
   Engine.run(engine);
@@ -54,16 +63,16 @@
   // run the renderer
   Render.run(render);
 
-  // interactive
-  world.gravity.y = 0;
+  // play mode
+  var playMode = true;
+  togglePlay();
 
   // pause movement of all elements
   function togglePlay() {
-    world.gravity.y = (world.gravity.y + 1) % 2;
+    playMode = !playMode;
 
-    var isStatic = world.gravity.y === 0;
     for (var i in moveables) {
-      moveables[i].isStatic = isStatic;
+      moveables[i].isStatic = !playMode;
     }
 
     // This should do the trick, but it doesn't work
@@ -87,3 +96,30 @@
     moveables.push(newCircle);
     World.add(world, newCircle);
   }
+
+
+  // pass events to virtual mouse
+  function matterMouseDownEvent(event) {
+    if (playMode) {
+      mouse.mousedown(event);
+    }
+  }
+  function matterMouseMoveEvent(event) {
+    if (playMode) {
+      mouse.mousemove(event);
+    }
+  }
+  function matterMouseUpEvent(event) {
+    if (playMode) {
+      mouse.mouseup(event);
+    }
+  }
+
+
+  var isDragging = false;
+  Matter.Events.on(mouseConstraint, "startdrag", function() {
+    isDragging = true;
+  });
+  Matter.Events.on(mouseConstraint, "enddrag", function() {
+    isDragging = false;
+  });

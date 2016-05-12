@@ -98,6 +98,9 @@ function mouseDownEvent(x, y, button) {
 }
 
 function mouseMoveEvent(x, y, button) {
+  if (isDragging) {
+    return;
+  }
   if (_isDown)
   {
     x -= _rc.x;

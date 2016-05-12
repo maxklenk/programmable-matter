@@ -84,9 +84,9 @@
 
 <div class="drawable" id="canvas-container">
   <canvas id="myCanvas"
-      onmousedown="mouseDownEvent(event.clientX, event.clientY, event.button)"
-      onmousemove="mouseMoveEvent(event.clientX, event.clientY, event.button)"
-      onmouseup="mouseUpEvent(event.clientX, event.clientY, event.button)"
+      onmousedown="mouseDownEvent(event.clientX, event.clientY, event.button); matterMouseDownEvent(event);"
+      onmousemove="mouseMoveEvent(event.clientX, event.clientY, event.button); matterMouseMoveEvent(event);"
+      onmouseup="mouseUpEvent(event.clientX, event.clientY, event.button); matterMouseUpEvent(event);"
       oncontextmenu="return false;">
     <span style="background-color:#ffff88;">The &lt;canvas&gt; element is not supported by this browser.</span>
   </canvas>
