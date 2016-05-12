@@ -61,3 +61,9 @@
     // http://brm.io/matter-js/docs/#property_timing.timeScale
     // engine.timing.timeScale = 0;
   }
+
+
+  function addRectangle(x, y, width, height, options) {
+    var newRectangle = Bodies.rectangle(x, y, width, height, options);
+    World.add(world, newRectangle);
+  }
