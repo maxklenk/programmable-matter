@@ -62,8 +62,19 @@
     // engine.timing.timeScale = 0;
   }
 
+  function addRandomRectangle() {
+    var x = rand(30, 790);
+    addRectangle(x, 150, 40, 40);
+  }
 
   function addRectangle(x, y, width, height, options) {
     var newRectangle = Bodies.rectangle(x, y, width, height, options);
+    moveables.push(newRectangle);
     World.add(world, newRectangle);
+  }
+  
+  function addCircle(x, y, width, height, options) {
+    var newCircle = Bodies.circle(x, y, width, height, options);
+    moveables.push(newCircle);
+    World.add(world, newCircle);
   }
