@@ -137,6 +137,10 @@ function mouseUpEvent(x, y, button) {
         case "Circle":
           var circle = shapeBuilder.getCircle(_strokes[0]);
           addCircle(circle.X, circle.Y, circle.Radius);
+          break;
+        case "X":
+          var center = shapeBuilder.getCenterOfX(_strokes);
+          removeBodyAt(center);
       }
 
     }

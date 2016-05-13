@@ -115,7 +115,6 @@
     }
   }
 
-
   var isDragging = false;
   Matter.Events.on(mouseConstraint, "startdrag", function() {
     isDragging = true;
@@ -123,3 +122,34 @@
   Matter.Events.on(mouseConstraint, "enddrag", function() {
     isDragging = false;
   });
+
+  function deleteObject() {
+    console.log("Delte something!");
+    removeBodyAt({X: 5, Y: 6});
+  }
+
+  function removeBodyAt(point) {
+    var bodies = world.bodies;
+    if (removeFromBodies(bodies, point)) {
+      return;
+    }
+
+    for (var i = 0; i < world.composites.length; i++) {
+      bodies = world.composites[i].bodies;
+      if (removeFromBodies(bodies, point)) {
+        return;
+      }
+    }
+
+    //TODO: Constrains
+  }
+
+  function removeFromBodies(bodies, point) {
+    for (var i = 0; i < bodies.length; i++) {
+      if (Matter.Bounds.contains(bodies[i].bounds, point)) {
+          bodies.splice(i, 1);
+          return true;
+      }
+    }
+    return false;
+  }

@@ -75,6 +75,16 @@ function ShapeBuilder() {
     return new Arrow(start, direction, magnitude);
   }
 
+  this.getCenterOfX = function(strokes) {
+    var centerOfStroke1 = getCenterOfStroke(strokes[0]);
+    var centerOfStroke2 = getCenterOfStroke(strokes[1]);
+    var point = {
+      x: Math.floor((centerOfStroke1.X + centerOfStroke2.X) / 2),
+      y: Math.floor((centerOfStroke1.Y + centerOfStroke2.Y) / 2)
+    };
+    return point;
+  }
+
   // Helper methods
   function getDeviation(stroke) {
     // parameter for equation y = a*x + b
@@ -87,6 +97,12 @@ function ShapeBuilder() {
       error += Math.abs(functionY - stroke[i].Y);
     }
     return error / stroke.length;
+  }
+
+  function getCenterOfStroke(stroke) {
+    var start = stroke[0];
+    var end = stroke[stroke.length - 1];
+    return new Point(Math.floor((start.X + end.X) / 2), Math.floor((start.Y + end.Y) / 2));
   }
 
 }
