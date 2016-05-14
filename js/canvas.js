@@ -4,6 +4,7 @@
 // Startup
 //
 var _isDown, _points, _strokes, _r, _g, _rc; // global variables
+var _numStrokes = 0;
 
 function onLoadEvent() {
   _points = new Array(); // point array for current stroke
@@ -75,6 +76,7 @@ function mouseDownEvent(x, y, button) {
   document.onmousedown = function() { return false; } // disable drag-select
   if (button <= 1)
   {
+    _numStrokes++;
     _isDown = true;
     x -= _rc.x;
     y -= _rc.y - getScrollY();
@@ -122,34 +124,12 @@ function mouseUpEvent(x, y, button) {
       drawText("Stroke #" + _strokes.length + " recorded.");
     }
   }
-  else if (button == 2) // segmentation with right-click
-  {
-    if (_strokes.length > 1 || (_strokes.length == 1 && _strokes[0].length >= 10))
-    {
-      var result = _r.Recognize(_strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
-      drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-      var shapeBuilder = new ShapeBuilder();
-      switch (result.Name) {
-        case "Rectangle":
-          var rectangle = shapeBuilder.getRectangle(_strokes[0]);
-          addRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
-          break;
-        case "Circle":
-          var circle = shapeBuilder.getCircle(_strokes[0]);
-          addCircle(circle.X, circle.Y, circle.Radius);
-          break;
-        case "X":
-          var center = shapeBuilder.getCenterOfX(_strokes);
-          removeBodyAt(center);
-      }
-
+  setTimeout(function() {
+    _numStrokes--;
+    if (_numStrokes == 0) {
+      drawFinished();
     }
-    else
-    {
-      drawText("Too little input made. Please try again.");
-    }
-    _points.length = 0; // clear and signal to clear strokes on next mousedown
-  }
+  },1000);
 }
 
 function drawConnectedPoint(from, to) {
@@ -220,4 +200,33 @@ function onClickClearStrokes() {
   _points.length = 0; // clear and signal to clear strokes on next mousedown
   _g.clearRect(0, 0, _rc.width, _rc.height);
   drawText("Canvas cleared.");
+}
+
+function drawFinished()
+{
+  if (_strokes.length > 1 || (_strokes.length == 1 && _strokes[0].length >= 10))
+  {
+    var result = _r.Recognize(_strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
+    drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+    var shapeBuilder = new ShapeBuilder();
+    switch (result.Name) {
+      case "Rectangle":
+        var rectangle = shapeBuilder.getRectangle(_strokes[0]);
+        addRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+        break;
+      case "Circle":
+        var circle = shapeBuilder.getCircle(_strokes[0]);
+        addCircle(circle.X, circle.Y, circle.Radius);
+        break;
+      case "X":
+        var center = shapeBuilder.getCenterOfX(_strokes);
+        removeBodyAt(center);
+    }
+
+  }
+  else
+  {
+    drawText("Too little input made. Please try again.");
+  }
+  onClickClearStrokes();
 }
