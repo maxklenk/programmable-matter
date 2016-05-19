@@ -88,21 +88,32 @@
   function addRectangle(x, y, width, height, options) {
     var newRectangle = Bodies.rectangle(x, y, width, height, options);
     moveables.push(newRectangle);
+    if (!playMode) {
+      newRectangle.isStatic = true;
+    }
     World.add(world, newRectangle);
   }
 
   function addCircle(x, y, radius, options) {
     var newCircle = Bodies.circle(x, y, radius, options);
     moveables.push(newCircle);
+    if (!playMode) {
+      newCircle.isStatic = true;
+    }
     World.add(world, newCircle);
   }
 
   var isDragging = false;
+  var draggedBody = null;
+  var startPoint = null;
+  var startTimestamp = null;
 
   // pass events to virtual mouse
   function matterMouseDownEvent(event) {
     var element = elementOnPoint({x: event.layerX, y: event.layerY});
     if (element) {
+      draggedBody = element.bodies[element.index];
+      draggedBody.isStatic = false;
       isDragging = true;
       startPoint = new Point(event.layerX, event.layerY);
       startTimestamp = Date.now();
@@ -110,14 +121,15 @@
 
     mouse.mousedown(event);
   }
+
   function matterMouseMoveEvent(event) {
     if (isDragging) {
       mouse.mousemove(event);
     }
   }
+
   function matterMouseUpEvent(event) {
     if (isDragging) {
-      isDragging = false;
       var endTimestamp = Date.now();
       if (endTimestamp - startTimestamp < 100) {
         console.log("click on element detected!");
@@ -125,21 +137,21 @@
       showMenu(startPoint);
       startPoint = undefined;
       startTimestamp = undefined;
+
+
+      if (!playMode) {
+        draggedBody.isStatic = true;
+      }
+      isDragging = false;
+      draggedBody = null;
     }
     mouse.mouseup(event);
   }
 
-  // Matter.Events.on(mouseConstraint, "startdrag", function() {
-  //   isDragging = true;
-  // });
-  // Matter.Events.on(mouseConstraint, "enddrag", function() {
-  //   isDragging = false;
-  // });
-
   function removeBodyAt(point) {
-    var found = elementOnPoint(point);
+    var found = bodyOnPoint(point);
     if (found) {
-      found.bodies.splice(found.index, 1);
+      Matter.Composite.remove(world, found, true);
       return true;
     } else {
       return false;
@@ -149,7 +161,7 @@
   }
 
   function bodyOnPoint(point) {
-    var result = onPoint(point);
+    var result = elementOnPoint(point);
     if (result) {
       return result.bodies[result.index];
     }
