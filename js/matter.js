@@ -132,9 +132,9 @@
     if (isDragging) {
       var endTimestamp = Date.now();
       if (endTimestamp - startTimestamp < 100) {
-        console.log("click on element detected!");
+        var body = bodyOnPoint(startPoint);
+        showMenu(startPoint, body);
       }
-      showMenu(startPoint);
       startPoint = undefined;
       startTimestamp = undefined;
 
