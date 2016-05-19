@@ -129,26 +129,44 @@
   }
 
   function removeBodyAt(point) {
-    var bodies = world.bodies;
-    if (removeFromBodies(bodies, point)) {
-      return;
-    }
-
-    for (var i = 0; i < world.composites.length; i++) {
-      bodies = world.composites[i].bodies;
-      if (removeFromBodies(bodies, point)) {
-        return;
-      }
+    var found = elementOnPoint(point);
+    if (found) {
+      found.bodies.splice(found.index, 1);
+      return true;
+    } else {
+      return false;
     }
 
     //TODO: Constrains
   }
 
-  function removeFromBodies(bodies, point) {
+  function bodyOnPoint(point) {
+    var result = onPoint(point);
+    if (result) {
+      return result.bodies[result.index];
+    }
+  }
+
+  function elementOnPoint(point) {
+    var bodies = world.bodies;
+    var found = elementOfBodiesOnPoint(bodies, point);
+    if (found) {
+      return found;
+    }
+
+    for (var i = 0; i < world.composites.length; i++) {
+      bodies = world.composites[i].bodies;
+      return elementOfBodiesOnPoint(bodies, point);
+    }
+  }
+
+  function elementOfBodiesOnPoint(bodies, point) {
     for (var i = 0; i < bodies.length; i++) {
       if (Matter.Bounds.contains(bodies[i].bounds, point)) {
-          bodies.splice(i, 1);
-          return true;
+        return {
+          bodies: bodies,
+          index: i
+        };
       }
     }
     return false;
