@@ -97,36 +97,38 @@
     World.add(world, newCircle);
   }
 
+  var isDragging = false;
 
   // pass events to virtual mouse
   function matterMouseDownEvent(event) {
-    if (playMode) {
-      mouse.mousedown(event);
+    var element = elementOnPoint({x: event.layerX, y: event.layerY});
+    if (element) {
+      isDragging = true;
     }
+
+    mouse.mousedown(event);
   }
   function matterMouseMoveEvent(event) {
-    if (playMode) {
+    if (isDragging) {
       mouse.mousemove(event);
     }
   }
   function matterMouseUpEvent(event) {
-    if (playMode) {
-      mouse.mouseup(event);
-    }
-  }
-
-  var isDragging = false;
-  Matter.Events.on(mouseConstraint, "startdrag", function() {
-    isDragging = true;
-  });
-  Matter.Events.on(mouseConstraint, "enddrag", function() {
     isDragging = false;
-  });
-
-  function deleteObject() {
-    console.log("Delte something!");
-    removeBodyAt({X: 5, Y: 6});
+    mouse.mouseup(event);
   }
+
+  // Matter.Events.on(mouseConstraint, "startdrag", function() {
+  //   isDragging = true;
+  // });
+  // Matter.Events.on(mouseConstraint, "enddrag", function() {
+  //   isDragging = false;
+  // });
+
+  // function deleteObject() {
+  //   console.log("Delte something!");
+  //   removeBodyAt({x: 5, y: 6});
+  // }
 
   function removeBodyAt(point) {
     var found = elementOnPoint(point);
@@ -145,6 +147,7 @@
     if (result) {
       return result.bodies[result.index];
     }
+    return false;
   }
 
   function elementOnPoint(point) {

@@ -72,6 +72,9 @@ function confirmRebuild() {
 // Mouse Events
 //
 function mouseDownEvent(x, y, button) {
+  if (isDragging) {
+    return;
+  }
   document.onselectstart = function() { return false; } // disable drag-select
   document.onmousedown = function() { return false; } // disable drag-select
   if (button <= 1)
