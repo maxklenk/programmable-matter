@@ -137,8 +137,8 @@ function mouseUpEvent(x, y, button) {
 
 function drawConnectedPoint(from, to) {
   _g.beginPath();
-  _g.moveTo(_points[from].X, _points[from].Y);
-  _g.lineTo(_points[to].X, _points[to].Y);
+  _g.moveTo(_points[from].x, _points[from].y);
+  _g.lineTo(_points[to].x, _points[to].y);
   _g.closePath();
   _g.stroke();
 }
@@ -215,11 +215,11 @@ function drawFinished()
     switch (result.Name) {
       case "Rectangle":
         var rectangle = shapeBuilder.getRectangle(_strokes[0]);
-        addRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+        addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
         break;
       case "Circle":
         var circle = shapeBuilder.getCircle(_strokes[0]);
-        addCircle(circle.X, circle.Y, circle.Radius);
+        addCircle(circle.x, circle.y, circle.Radius);
         break;
       case "X":
         var center = shapeBuilder.getCenterOfX(_strokes);

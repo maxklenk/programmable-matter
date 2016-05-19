@@ -104,6 +104,8 @@
     var element = elementOnPoint({x: event.layerX, y: event.layerY});
     if (element) {
       isDragging = true;
+      startPoint = new Point(event.layerX, event.layerY);
+      startTimestamp = Date.now();
     }
 
     mouse.mousedown(event);
@@ -114,7 +116,16 @@
     }
   }
   function matterMouseUpEvent(event) {
-    isDragging = false;
+    if (isDragging) {
+      isDragging = false;
+      var endTimestamp = Date.now();
+      if (endTimestamp - startTimestamp < 100) {
+        console.log("click on element detected!");
+      }
+      showMenu(startPoint);
+      startPoint = undefined;
+      startTimestamp = undefined;
+    }
     mouse.mouseup(event);
   }
 
@@ -124,11 +135,6 @@
   // Matter.Events.on(mouseConstraint, "enddrag", function() {
   //   isDragging = false;
   // });
-
-  // function deleteObject() {
-  //   console.log("Delte something!");
-  //   removeBodyAt({x: 5, y: 6});
-  // }
 
   function removeBodyAt(point) {
     var found = elementOnPoint(point);

@@ -1,22 +1,22 @@
 function ShapeBuilder() {
   function Point(x, y) // constructor
   {
-    this.X = x;
-    this.Y = y;
+    this.x = x;
+    this.y = y;
   }
 
   function Rectangle(x, y, width, height) // constructor
   {
-    this.X = x;
-    this.Y = y;
+    this.x = x;
+    this.y = y;
     this.Width = width;
     this.Height = height;
   }
 
   function Circle(x, y, radius) // constructor
   {
-    this.X = x;
-    this.Y = y;
+    this.x = x;
+    this.y = y;
     this.Radius = radius;
   }
 
@@ -31,10 +31,10 @@ function ShapeBuilder() {
   this.getRectangle = function(strokes) {
     var minX = +Infinity, maxX = -Infinity, minY = +Infinity, maxY = -Infinity;
     for (var i = 0; i < strokes.length; i++) {
-      minX = Math.min(minX, strokes[i].X);
-      minY = Math.min(minY, strokes[i].Y);
-      maxX = Math.max(maxX, strokes[i].X);
-      maxY = Math.max(maxY, strokes[i].Y);
+      minX = Math.min(minX, strokes[i].x);
+      minY = Math.min(minY, strokes[i].y);
+      maxX = Math.max(maxX, strokes[i].x);
+      maxY = Math.max(maxY, strokes[i].y);
     }
     var centerX = minX + (maxX - minX) / 2;
     var centerY = minY + (maxY - minY) / 2;
@@ -44,10 +44,10 @@ function ShapeBuilder() {
   this.getCircle = function(strokes) {
     var minX = +Infinity, maxX = -Infinity, minY = +Infinity, maxY = -Infinity;
     for (var i = 0; i < strokes.length; i++) {
-      minX = Math.min(minX, strokes[i].X);
-      minY = Math.min(minY, strokes[i].Y);
-      maxX = Math.max(maxX, strokes[i].X);
-      maxY = Math.max(maxY, strokes[i].Y);
+      minX = Math.min(minX, strokes[i].x);
+      minY = Math.min(minY, strokes[i].y);
+      maxX = Math.max(maxX, strokes[i].x);
+      maxY = Math.max(maxY, strokes[i].y);
     }
     var centerX = minX + (maxX - minX) / 2;
     var centerY = minY + (maxY - minY) / 2;
@@ -65,13 +65,13 @@ function ShapeBuilder() {
     var arrowPartIndex = deviation1 < deviation2 ? 1 : 0;
 
     var centerOfArrowPart = Math.floor(strokes[arrowPartIndex].length / 2);
-    var distanceToArrowPart1 = Math.sqrt( Math.pow(strokes[directionPartIndex][0].X - strokes[arrowPartIndex][centerOfArrowPart].X, 2) + Math.pow(strokes[directionPartIndex][0].Y - strokes[arrowPartIndex][centerOfArrowPart].Y, 2));
-    var distanceToArrowPart2 = Math.sqrt( Math.pow(strokes[directionPartIndex][strokes[directionPartIndex].length - 1].X - strokes[arrowPartIndex][centerOfArrowPart].X, 2) - Math.pow(strokes[directionPartIndex][strokes[directionPartIndex].length - 1].Y - strokes[arrowPartIndex][centerOfArrowPart].Y, 2));
+    var distanceToArrowPart1 = Math.sqrt( Math.pow(strokes[directionPartIndex][0].x - strokes[arrowPartIndex][centerOfArrowPart].x, 2) + Math.pow(strokes[directionPartIndex][0].y - strokes[arrowPartIndex][centerOfArrowPart].y, 2));
+    var distanceToArrowPart2 = Math.sqrt( Math.pow(strokes[directionPartIndex][strokes[directionPartIndex].length - 1].x - strokes[arrowPartIndex][centerOfArrowPart].x, 2) - Math.pow(strokes[directionPartIndex][strokes[directionPartIndex].length - 1].y - strokes[arrowPartIndex][centerOfArrowPart].y, 2));
     var start = distanceToArrowPart1 < distanceToArrowPart2 ? strokes[directionPartIndex][strokes[directionPartIndex].length - 1] : strokes[directionPartIndex][0];
     var end = distanceToArrowPart1 < distanceToArrowPart2 ? strokes[directionPartIndex][0] : strokes[directionPartIndex][strokes[directionPartIndex].length - 1];
 
-    var direction = new Point(end.X - start.X, end.Y - start.Y);
-    var magnitude = Math.sqrt(Math.pow(direction.X, 2), Math.pow(direction.Y, 2));
+    var direction = new Point(end.x - start.x, end.y - start.y);
+    var magnitude = Math.sqrt(Math.pow(direction.x, 2), Math.pow(direction.y, 2));
     return new Arrow(start, direction, magnitude);
   }
 
@@ -79,8 +79,8 @@ function ShapeBuilder() {
     var centerOfStroke1 = getCenterOfStroke(strokes[0]);
     var centerOfStroke2 = getCenterOfStroke(strokes[1]);
     var point = {
-      x: Math.floor((centerOfStroke1.X + centerOfStroke2.X) / 2),
-      y: Math.floor((centerOfStroke1.Y + centerOfStroke2.Y) / 2)
+      x: Math.floor((centerOfStroke1.x + centerOfStroke2.x) / 2),
+      y: Math.floor((centerOfStroke1.y + centerOfStroke2.y) / 2)
     };
     return point;
   }
@@ -88,13 +88,13 @@ function ShapeBuilder() {
   // Helper methods
   function getDeviation(stroke) {
     // parameter for equation y = a*x + b
-    var a = (stroke[stroke.length - 1].Y - stroke[0].Y) / (stroke[stroke.length - 1].X - stroke[0].X);
-    var b = stroke[0].Y - a * stroke[0].X;
+    var a = (stroke[stroke.length - 1].y - stroke[0].y) / (stroke[stroke.length - 1].x - stroke[0].x);
+    var b = stroke[0].y - a * stroke[0].x;
 
     var error = 0;
     for (var i = 0; i < stroke.length; i++) {
-      var functionY = a * stroke[i].X + b;
-      error += Math.abs(functionY - stroke[i].Y);
+      var functionY = a * stroke[i].x + b;
+      error += Math.abs(functionY - stroke[i].y);
     }
     return error / stroke.length;
   }
@@ -102,7 +102,7 @@ function ShapeBuilder() {
   function getCenterOfStroke(stroke) {
     var start = stroke[0];
     var end = stroke[stroke.length - 1];
-    return new Point(Math.floor((start.X + end.X) / 2), Math.floor((start.Y + end.Y) / 2));
+    return new Point(Math.floor((start.x + end.x) / 2), Math.floor((start.y + end.y) / 2));
   }
 
 }

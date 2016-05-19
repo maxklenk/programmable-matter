@@ -69,16 +69,16 @@
 //
 function Point(x, y) // constructor
 {
-	this.X = x;
-	this.Y = y;
+	this.x = x;
+	this.y = y;
 }
 //
 // Rectangle class
 //
 function Rectangle(x, y, width, height) // constructor
 {
-	this.X = x;
-	this.Y = y;
+	this.x = x;
+	this.y = y;
 	this.Width = width;
 	this.Height = height;
 }
@@ -170,7 +170,7 @@ function NDollarRecognizer(useBoundedRotationInvariance) // constructor
 	for (var i = 0; i < gestures.length; i++) {
 		this.Multistrokes[i] = new Multistroke(gestures[i].name, useBoundedRotationInvariance, gestures[i].strokes);
 	}
-	
+
 	// this.Multistrokes[5] = new Multistroke("H", useBoundedRotationInvariance, new Array(
 	// 	new Array(new Point(188,137),new Point(188,225)),
 	// 	new Array(new Point(188,180),new Point(241,180)),
@@ -333,7 +333,7 @@ function CombineStrokes(strokes)
 	var points = new Array();
 	for (var s = 0; s < strokes.length; s++) {
 		for (var p = 0; p < strokes[s].length; p++) {
-			points[points.length] = new Point(strokes[s][p].X, strokes[s][p].Y);
+			points[points.length] = new Point(strokes[s][p].x, strokes[s][p].y);
 		}
 	}
 	return points;
@@ -348,8 +348,8 @@ function Resample(points, n)
 		var d = Distance(points[i - 1], points[i]);
 		if ((D + d) >= I)
 		{
-			var qx = points[i - 1].X + ((I - D) / d) * (points[i].X - points[i - 1].X);
-			var qy = points[i - 1].Y + ((I - D) / d) * (points[i].Y - points[i - 1].Y);
+			var qx = points[i - 1].x + ((I - D) / d) * (points[i].x - points[i - 1].x);
+			var qy = points[i - 1].y + ((I - D) / d) * (points[i].y - points[i - 1].y);
 			var q = new Point(qx, qy);
 			newpoints[newpoints.length] = q; // append new point 'q'
 			points.splice(i, 0, q); // insert 'q' at position i in points s.t. 'q' will be the next i
@@ -358,13 +358,13 @@ function Resample(points, n)
 		else D += d;
 	}
 	if (newpoints.length == n - 1) // somtimes we fall a rounding-error short of adding the last point, so add it if so
-		newpoints[newpoints.length] = new Point(points[points.length - 1].X, points[points.length - 1].Y);
+		newpoints[newpoints.length] = new Point(points[points.length - 1].x, points[points.length - 1].y);
 	return newpoints;
 }
 function IndicativeAngle(points)
 {
 	var c = Centroid(points);
-	return Math.atan2(c.Y - points[0].Y, c.X - points[0].X);
+	return Math.atan2(c.y - points[0].y, c.x - points[0].x);
 }
 function RotateBy(points, radians) // rotates points around centroid
 {
@@ -373,8 +373,8 @@ function RotateBy(points, radians) // rotates points around centroid
 	var sin = Math.sin(radians);
 	var newpoints = new Array();
 	for (var i = 0; i < points.length; i++) {
-		var qx = (points[i].X - c.X) * cos - (points[i].Y - c.Y) * sin + c.X
-		var qy = (points[i].X - c.X) * sin + (points[i].Y - c.Y) * cos + c.Y;
+		var qx = (points[i].x - c.x) * cos - (points[i].y - c.y) * sin + c.x
+		var qy = (points[i].x - c.x) * sin + (points[i].y - c.y) * cos + c.y;
 		newpoints[newpoints.length] = new Point(qx, qy);
 	}
 	return newpoints;
@@ -385,8 +385,8 @@ function ScaleDimTo(points, size, ratio1D) // scales bbox uniformly for 1D, non-
 	var uniformly = Math.min(B.Width / B.Height, B.Height / B.Width) <= ratio1D; // 1D or 2D gesture test
 	var newpoints = new Array();
 	for (var i = 0; i < points.length; i++) {
-		var qx = uniformly ? points[i].X * (size / Math.max(B.Width, B.Height)) : points[i].X * (size / B.Width);
-		var qy = uniformly ? points[i].Y * (size / Math.max(B.Width, B.Height)) : points[i].Y * (size / B.Height);
+		var qx = uniformly ? points[i].x * (size / Math.max(B.Width, B.Height)) : points[i].x * (size / B.Width);
+		var qy = uniformly ? points[i].y * (size / Math.max(B.Width, B.Height)) : points[i].y * (size / B.Height);
 		newpoints[newpoints.length] = new Point(qx, qy);
 	}
 	return newpoints;
@@ -396,8 +396,8 @@ function TranslateTo(points, pt) // translates points' centroid
 	var c = Centroid(points);
 	var newpoints = new Array();
 	for (var i = 0; i < points.length; i++) {
-		var qx = points[i].X + pt.X - c.X;
-		var qy = points[i].Y + pt.Y - c.Y;
+		var qx = points[i].x + pt.x - c.x;
+		var qy = points[i].y + pt.y - c.y;
 		newpoints[newpoints.length] = new Point(qx, qy);
 	}
 	return newpoints;
@@ -407,7 +407,7 @@ function Vectorize(points, useBoundedRotationInvariance) // for Protractor
 	var cos = 1.0;
 	var sin = 0.0;
 	if (useBoundedRotationInvariance) {
-		var iAngle = Math.atan2(points[0].Y, points[0].X);
+		var iAngle = Math.atan2(points[0].y, points[0].x);
 		var baseOrientation = (Math.PI / 4.0) * Math.floor((iAngle + Math.PI / 8.0) / (Math.PI / 4.0));
 		cos = Math.cos(baseOrientation - iAngle);
 		sin = Math.sin(baseOrientation - iAngle);
@@ -415,8 +415,8 @@ function Vectorize(points, useBoundedRotationInvariance) // for Protractor
 	var sum = 0.0;
 	var vector = new Array();
 	for (var i = 0; i < points.length; i++) {
-		var newX = points[i].X * cos - points[i].Y * sin;
-		var newY = points[i].Y * cos + points[i].X * sin;
+		var newX = points[i].x * cos - points[i].y * sin;
+		var newY = points[i].y * cos + points[i].x * sin;
 		vector[vector.length] = newX;
 		vector[vector.length] = newY;
 		sum += newX * newX + newY * newY;
@@ -470,8 +470,8 @@ function Centroid(points)
 {
 	var x = 0.0, y = 0.0;
 	for (var i = 0; i < points.length; i++) {
-		x += points[i].X;
-		y += points[i].Y;
+		x += points[i].x;
+		y += points[i].y;
 	}
 	x /= points.length;
 	y /= points.length;
@@ -481,10 +481,10 @@ function BoundingBox(points)
 {
 	var minX = +Infinity, maxX = -Infinity, minY = +Infinity, maxY = -Infinity;
 	for (var i = 0; i < points.length; i++) {
-		minX = Math.min(minX, points[i].X);
-		minY = Math.min(minY, points[i].Y);
-		maxX = Math.max(maxX, points[i].X);
-		maxY = Math.max(maxY, points[i].Y);
+		minX = Math.min(minX, points[i].x);
+		minY = Math.min(minY, points[i].y);
+		maxX = Math.max(maxX, points[i].x);
+		maxY = Math.max(maxY, points[i].y);
 	}
 	return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 }
@@ -504,19 +504,19 @@ function PathLength(points) // length traversed by a point path
 }
 function Distance(p1, p2) // distance between two points
 {
-	var dx = p2.X - p1.X;
-	var dy = p2.Y - p1.Y;
+	var dx = p2.x - p1.x;
+	var dy = p2.y - p1.y;
 	return Math.sqrt(dx * dx + dy * dy);
 }
 function CalcStartUnitVector(points, index) // start angle from points[0] to points[index] normalized as a unit vector
 {
-	var v = new Point(points[index].X - points[0].X, points[index].Y - points[0].Y);
-	var len = Math.sqrt(v.X * v.X + v.Y * v.Y);
-	return new Point(v.X / len, v.Y / len);
+	var v = new Point(points[index].x - points[0].x, points[index].y - points[0].y);
+	var len = Math.sqrt(v.x * v.x + v.y * v.y);
+	return new Point(v.x / len, v.y / len);
 }
 function AngleBetweenUnitVectors(v1, v2) // gives acute angle between unit vectors from (0,0) to v1, and (0,0) to v2
 {
-	var n = (v1.X * v2.X + v1.Y * v2.Y);
+	var n = (v1.x * v2.x + v1.y * v2.y);
 	if (n < -1.0 || n > +1.0)
 		n = Round(n, 5); // fix: JavaScript rounding bug that can occur so that -1 <= n <= +1
 	return Math.acos(n); // arc cosine of the vector dot product

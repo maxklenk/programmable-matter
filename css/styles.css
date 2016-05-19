@@ -14,5 +14,22 @@ body {
 
 #myCanvas {
   position: absolute;
-  background: none; 
+  background: none;
+}
+
+.element-menu {
+  display: none;
+  position: absolute;
+}
+
+.element-menu ul {
+  list-style-type: none;
+  color: white;
+  line-height: 2.5;
+  padding.left: 20px;
+  background: rgba(34, 34, 34, 0.75);
+}
+
+.element-menu .fa {
+  width: 25px;
 }
