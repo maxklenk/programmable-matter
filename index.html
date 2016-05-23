@@ -101,12 +101,13 @@
     <ul>
       <li>
         <i class="fa fa-thumb-tack"></i>
-        <input class="element-menu--sticky" type="checkbox"></input>
+        <input class="element-menu--sticky" onclick="setStaticProperty(this.checked)" type="checkbox"></input>
       </li>
       <li>
-        <form  oninput="x.value=parseInt(size.value)">
+        <!-- <form  oninput="x.value=parseInt(size.value) / 1000; scaleBody(parseInt(size.value) / 1000);"> -->
+        <form  oninput="x.value=parseInt(size.value) / 1000;" onmouseup="scaleBody(parseInt(size.value) / 1000);">
           <i class="fa fa-expand"></i>
-          <input class="element-menu--weight" name="element-menu--weight" id="size" type="range" min="0" value="80" max="10000" orient="vertical" >
+          <input class="element-menu--size" name="element-menu--size" id="size" type="range" min="0" value="1000" max="2000" orient="vertical" >
           <output name="x" for="size">0</output>
         </form>
       </li>
@@ -118,7 +119,11 @@
         </form>
       </li>
       <li>
-        <i class="fa fa-rotate-left"></i>
+        <form  oninput="x.value=parseInt(angle.value); rotateBody(parseInt(angle.value));" onmouseup="resetMenu()">
+            <i class="fa fa-rotate-left"></i>
+            <input class="element-menu--angle" name="element-menu--angle" id="angle" type="range" min="-180" value="0" max="180" orient="vertical" >
+            <output name="x" for="angle">180</output>
+        </form>
       </li>
     </ul>
   </div>

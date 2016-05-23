@@ -131,9 +131,8 @@
   function matterMouseUpEvent(event) {
     if (isDragging) {
       var endTimestamp = Date.now();
-      if (endTimestamp - startTimestamp < 100) {
-        var body = bodyOnPoint(startPoint);
-        showMenu(startPoint, body);
+      if (endTimestamp - startTimestamp < 200) {
+        showMenu(startPoint, draggedBody);
       }
       startPoint = undefined;
       startTimestamp = undefined;
