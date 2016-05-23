@@ -5,6 +5,7 @@ function showMenu(point, body) {
   bodyFromMenu = body;
   bodyProperties.angle = body.angle;
   var menu = jQuery('.element-menu');
+  //TODO: set properties of menu according to body
   var canvasContainer = jQuery('#myCanvas');
   var top = point.y + canvasContainer.offset().top - (menu.height())/2;
   var left = point.x + canvasContainer.offset().left;
@@ -30,6 +31,5 @@ function setStaticProperty(isStatic) {
 }
 
 function resetMenu() {
-    var menu = jQuery('.element-menu');
     menu.css({"display": "none"})
 }
