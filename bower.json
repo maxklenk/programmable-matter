@@ -17,6 +17,8 @@
     "tests"
   ],
   "dependencies": {
-    "Matter": "matter-js#^0.10.0"
+    "Matter": "matter-js#^0.10.0",
+    "jquery": "^2.2.4",
+    "font-awesome": "^4.6.3"
   }
 }
