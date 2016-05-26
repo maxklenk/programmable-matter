@@ -33,3 +33,12 @@ body {
 .element-menu .fa {
   width: 25px;
 }
+
+.element-menu output {
+  width: 55px;
+  display: inline-block;
+}
+
+.element-menu li {
+  text-align: left;
+}
