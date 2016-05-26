@@ -72,7 +72,7 @@ function confirmRebuild() {
 // Mouse Events
 //
 function mouseDownEvent(x, y, button) {
-  if (isDragging) {
+  if (myMatter.state.isDragging) {
     return;
   }
   document.onselectstart = function() { return false; } // disable drag-select
@@ -103,7 +103,7 @@ function mouseDownEvent(x, y, button) {
 }
 
 function mouseMoveEvent(x, y, button) {
-  if (isDragging) {
+  if (myMatter.state.isDragging) {
     return;
   }
   if (_isDown)
@@ -215,15 +215,15 @@ function drawFinished()
     switch (result.Name) {
       case "Rectangle":
         var rectangle = shapeBuilder.getRectangle(_strokes[0]);
-        addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
+        myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
         break;
       case "Circle":
         var circle = shapeBuilder.getCircle(_strokes[0]);
-        addCircle(circle.x, circle.y, circle.Radius);
+        myMatter.addCircle(circle.x, circle.y, circle.Radius);
         break;
       case "X":
         var center = shapeBuilder.getCenterOfX(_strokes);
-        removeBodyAt(center);
+        myMatter.removeBodyAt(center);
     }
 
   }
