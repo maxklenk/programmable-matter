@@ -85,14 +85,14 @@
   -->
 </div>
 
-<button onclick="togglePlay()">play/pause</button>
-<button onclick="addRandomRectangle()">add Rectangle</button>
+<button onclick="myMatter.togglePlay()">play/pause</button>
+<button onclick="myMatter.addRandomRectangle()">add Rectangle</button>
 
 <div class="drawable" id="canvas-container">
   <canvas id="myCanvas"
-      onmousedown="matterMouseDownEvent(event); mouseDownEvent(event.clientX, event.clientY, event.button);"
-      onmousemove="matterMouseMoveEvent(event); mouseMoveEvent(event.clientX, event.clientY, event.button);"
-      onmouseup="matterMouseUpEvent(event); mouseUpEvent(event.clientX, event.clientY, event.button);"
+      onmousedown="myMatter.mouseDownEvent(event); mouseDownEvent(event.clientX, event.clientY, event.button);"
+      onmousemove="myMatter.mouseMoveEvent(event); mouseMoveEvent(event.clientX, event.clientY, event.button);"
+      onmouseup="myMatter.mouseUpEvent(event); mouseUpEvent(event.clientX, event.clientY, event.button);"
       oncontextmenu="return false;">
     <span style="background-color:#ffff88;">The &lt;canvas&gt; element is not supported by this browser.</span>
   </canvas>
@@ -101,7 +101,7 @@
     <ul>
       <li>
         <i class="fa fa-thumb-tack"></i>
-        <input class="element-menu--sticky" onclick="setStaticProperty(this.checked)" type="checkbox"></input>
+        <input class="element-menu--sticky" onclick="setStaticProperty(this.checked)" type="checkbox" ></input>
       </li>
       <li>
         <!-- <form  oninput="x.value=parseInt(size.value) / 1000; scaleBody(parseInt(size.value) / 1000);"> -->

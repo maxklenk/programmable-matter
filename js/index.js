@@ -1,11 +1,13 @@
 var bodyFromMenu = undefined;
 var bodyPropertiesForBodyId = {};
 var lastScale = undefined;
+var bodyProperties = {};
 
 function showMenu(point, body) {
   console.log(body);
   bodyFromMenu = body;
   var menu = jQuery('.element-menu');
+  bodyProperties.angle = body.angle;
   //TODO: set properties of menu according to body
   if (bodyPropertiesForBodyId[body.id]) {
     jQuery('#angle').val(bodyPropertiesForBodyId[body.id].angle * 180/3.14159);
@@ -29,17 +31,17 @@ function scaleBody(factor) {
     var newScale = factor / lastScale;
     console.log("lastScale: " + lastScale + " newScale: " + newScale);
     lastScale = factor;
-    Matter.Body.scale(bodyFromMenu, newScale, newScale);
+    myMatter.setScaleOfBody(bodyFromMenu, newScale, newScale);
 }
 
 function rotateBody(degrees) {
     var radians = degrees * (Math.PI / 180);
     bodyPropertiesForBodyId[bodyFromMenu.id].angle = bodyPropertiesForBodyId[bodyFromMenu.id].startAngle + radians;
-    Matter.Body.setAngle(bodyFromMenu, bodyPropertiesForBodyId[bodyFromMenu.id].angle);
+    myMatter.setAngleOfBody(bodyFromMenu, bodyPropertiesForBodyId[bodyFromMenu.id].angle)
 }
 
 function setStaticProperty(isStatic) {
-    Matter.Body.setStatic(bodyFromMenu, isStatic);
+    myMatter.setStaticOfBody(bodyFromMenu, isStatic);
     resetMenu();
 }
 
