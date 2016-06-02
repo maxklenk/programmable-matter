@@ -23,7 +23,8 @@ var myMatter = (function() {
     // state
     state: {
       isDragging: false,
-      playMode: true
+      playMode: true,
+      multipleBodiesMode: false
     },
 
     // matter

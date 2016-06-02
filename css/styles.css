@@ -42,3 +42,14 @@ body {
 .element-menu li {
   text-align: left;
 }
+
+.multipleBodiesButton {
+    position: absolute;
+    left: 2em;
+    top: 10em;
+    background-color: #5c5;
+    width: 5em;
+    height: 5em;
+    color: #fff;
+    text-align: center;
+}

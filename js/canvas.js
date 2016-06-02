@@ -9,6 +9,8 @@ var _numStrokes = 0;
 function onLoadEvent() {
   _points = new Array(); // point array for current stroke
   _strokes = new Array(); // array of point arrays
+  _multipleBodies = new Array();
+
   _r = new NDollarRecognizer(document.getElementById('useBoundedRotationInvariance').checked);
 
   var canvas = document.getElementById('myCanvas');
@@ -83,11 +85,7 @@ function mouseDownEvent(x, y, button) {
     _isDown = true;
     x -= _rc.x;
     y -= _rc.y - getScrollY();
-    if (_points.length == 0)
-    {
-      _strokes.length = 0;
-      _g.clearRect(0, 0, _rc.width, _rc.height);
-    }
+    
     _points.length = 1; // clear
     _points[0] = new Point(x, y);
     drawText("Recording stroke #" + (_strokes.length + 1) + "...");
@@ -130,9 +128,15 @@ function mouseUpEvent(x, y, button) {
   setTimeout(function() {
     _numStrokes = _numStrokes <= 0 ? 0 : _numStrokes - 1;
     if (_numStrokes === 0) {
-      drawFinished();
+        if (myMatter.state.multipleBodiesMode) {
+            _multipleBodies.push(_strokes);
+            _strokes = [];
+            _points = [];
+        } else {
+            drawFinished();
+        }
     }
-  },1000);
+},500);
 }
 
 function drawConnectedPoint(from, to) {
@@ -206,6 +210,7 @@ function onClickClearStrokes() {
 }
 
 function clearStrokes() {
+  console.log("clearStrokes");
   _points = [];
   _strokes = [];
   _g.clearRect(0, 0, _rc.width, _rc.height);
@@ -213,29 +218,69 @@ function clearStrokes() {
 
 function drawFinished()
 {
-  if (_strokes.length > 1 || (_strokes.length == 1 && _strokes[0].length >= 10))
-  {
-    var result = _r.Recognize(_strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
-    drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-    var shapeBuilder = new ShapeBuilder();
-    switch (result.Name) {
-      case "Rectangle":
-        var rectangle = shapeBuilder.getRectangle(_strokes[0]);
-        myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
-        break;
-      case "Circle":
-        var circle = shapeBuilder.getCircle(_strokes[0]);
-        myMatter.addCircle(circle.x, circle.y, circle.Radius);
-        break;
-      case "X":
-        var center = shapeBuilder.getCenterOfX(_strokes);
-        myMatter.removeBodyAt(center);
-    }
-
-  }
-  else
-  {
-    drawText("Too little input made. Please try again.");
-  }
+  recognizeBody(_strokes);
   clearStrokes();
+}
+
+function activateMultipleBodiesMode(event) {
+    jQuery('.multipleBodiesButton').css({
+        'background-color': '#c55'
+    });
+    myMatter.state.multipleBodiesMode = true;
+}
+
+function deactivateMultipleBodiesMode(event) {
+    jQuery('.multipleBodiesButton').css({
+        'background-color': '#5c5'
+    });
+    myMatter.state.multipleBodiesMode = false;
+    recognizeMultipleBodies();
+}
+
+function checkForModeActivation(event) {
+    if (event.keyCode === 17) {
+        activateMultipleBodiesMode();
+    }
+}
+
+function checkForModeDeactivation(event) {
+    if (event.keyCode === 17) {
+        deactivateMultipleBodiesMode();
+    }
+}
+
+function recognizeBody(strokes) {
+    if (strokes.length > 1 || (strokes.length == 1 && strokes[0].length >= 10))
+    {
+      var result = _r.Recognize(strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
+      drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+      console.log(result.Name);
+      var shapeBuilder = new ShapeBuilder();
+      switch (result.Name) {
+        case "Rectangle":
+          var rectangle = shapeBuilder.getRectangle(strokes[0]);
+          myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
+          break;
+        case "Circle":
+          var circle = shapeBuilder.getCircle(strokes[0]);
+          myMatter.addCircle(circle.x, circle.y, circle.Radius);
+          break;
+        case "X":
+          var center = shapeBuilder.getCenterOfX(strokes);
+          myMatter.removeBodyAt(center);
+      }
+
+    }
+    else
+    {
+      drawText("Too little input made. Please try again.");
+    }
+}
+
+function recognizeMultipleBodies() {
+    console.log(_multipleBodies);
+    for (var i = 0; i < _multipleBodies.length; i++) {
+        recognizeBody(_multipleBodies[i]);
+    }
+    clearStrokes();
 }

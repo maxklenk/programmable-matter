@@ -15,7 +15,7 @@
 
 </head>
 
-<body onload="onLoadEvent()">
+<body onload="onLoadEvent()" onkeydown="checkForModeActivation(event)" onkeyup="checkForModeDeactivation(event)">
 <h1 class="headline">programmable matter</h1>
 
 
@@ -82,6 +82,10 @@
 
 <button onclick="myMatter.togglePlay()">play/pause</button>
 <button onclick="myMatter.addRandomRectangle()">add Rectangle</button>
+
+<div class="multipleBodiesButton" ontouchstart="activateMultipleBodiesMode(event)" ontouchend="deactivateMultipleBodiesMode()">
+    Hold to draw multiple bodies
+</div>
 
 <div class="drawable" id="canvas-container">
   <canvas id="myCanvas"
