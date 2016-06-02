@@ -1,3 +1,5 @@
+'use strict';
+
 var myMatter = (function() {
 
   var myMatter = {
@@ -24,7 +26,8 @@ var myMatter = (function() {
     state: {
       isDragging: false,
       playMode: true,
-      multipleBodiesMode: false
+      multipleBodiesMode: false,
+      selectedBody: null
     },
 
     // matter
@@ -33,6 +36,9 @@ var myMatter = (function() {
     world: null,
     mouse: null
   };
+
+  // constants
+  var CLICK_DELAY_MS = 200;
 
   // internals
   var draggedBody = null;
@@ -65,12 +71,14 @@ var myMatter = (function() {
     // setup
     createDefaultBodies();
     createVirtualMouse();
+    setRenderOptions();
 
     // run the engine
     Engine.run(myMatter.engine);
 
     // run the renderer
     Render.run(myMatter.render);
+
 
     // play mode
     togglePlay();
@@ -92,7 +100,8 @@ var myMatter = (function() {
 
     var ball = Bodies.circle(560, 100, 50, {density: 0.005});
     ball.isMoveable = true;
-    var ground = Bodies.rectangle(400, 610, 810, 60, {isStatic: true});
+    var ground = Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
+    ground.render.fillStyle = '#222222';
 
     var elements = [
       stack,
@@ -117,6 +126,27 @@ var myMatter = (function() {
       mouse: myMatter.mouse
     });
     World.add(myMatter.world, mouseConstraint);
+  }
+
+  function setRenderOptions() {
+    var renderOptions = myMatter.render.options;
+    renderOptions.wireframes = false;
+    renderOptions.hasBounds = false;
+    renderOptions.showDebug = false;
+    renderOptions.showBroadphase = false;
+    renderOptions.showBounds = false;
+    renderOptions.showVelocity = false;
+    renderOptions.showCollisions = false;
+    renderOptions.showAxes = false;
+    renderOptions.showPositions = false;
+    renderOptions.showAngleIndicator = false;
+    renderOptions.showIds = false;
+    renderOptions.showShadows = false;
+    renderOptions.showVertexNumbers = false;
+    renderOptions.showConvexHulls = false;
+    renderOptions.showInternalEdges = false;
+    renderOptions.showSeparations = false;
+    renderOptions.background = '#222222';
   }
 
   // pause movement of all elements
@@ -162,9 +192,11 @@ var myMatter = (function() {
   function mouseDownEvent(event) {
     var element = elementOnPoint({x: event.layerX, y: event.layerY});
     if (element) {
+      // start dragging
       draggedBody = element.bodies[element.index];
-      draggedBody.isStatic = false;
       myMatter.state.isDragging = true;
+
+      // click Handler
       startPoint = new Point(event.layerX, event.layerY);
       startTimestamp = Date.now();
     }
@@ -174,19 +206,30 @@ var myMatter = (function() {
 
   function mouseMoveEvent(event) {
     if (myMatter.state.isDragging) {
-      myMatter.mouse.mousemove(event);
+      // only move when not a click
+      var currentTimestamp = Date.now();
+      if (currentTimestamp - startTimestamp > CLICK_DELAY_MS) {
+        draggedBody.isStatic = false;
+        myMatter.mouse.mousemove(event);
+      }
     }
   }
 
   function mouseUpEvent(event) {
     if (myMatter.state.isDragging) {
+
+      // click Handler
       var endTimestamp = Date.now();
-      if (endTimestamp - startTimestamp < 200) {
+      if (endTimestamp - startTimestamp < CLICK_DELAY_MS) {
         showMenu(startPoint, draggedBody);
+        myMatter.selectedBody = draggedBody;
+        // myMatter.selectedBody.render.lineWidth = 3;
+        // myMatter.selectedBody.render.strokeStyle = Matter.Common.shadeColor( myMatter.selectedBody.render.fillStyle, +20);
       }
       startPoint = undefined;
       startTimestamp = undefined;
 
+      // stop dragging
       if (!myMatter.state.playMode || !draggedBody.isMoveable) {
         draggedBody.isStatic = true;
       }
@@ -247,9 +290,18 @@ var myMatter = (function() {
       body.isStatic = true;
     } else {
       body.isMoveable = true;
-      if (!myMatter.state.playMode) {
-        body.isStatic = true;
-      }
+      body.isStatic = false;
+    }
+
+    // render properties (http://brm.io/matter-js/docs/files/src_body_Body.js.html#l151)
+    var newFillStyle = (!body.isMoveable ? '#eeeeee' : Matter.Common.choose(['#556270', '#4ECDC4', '#C7F464', '#FF6B6B', '#C44D58']));
+    var newStrokeStyle = Matter.Common.shadeColor(newFillStyle, -20);
+    body.render.fillStyle = newFillStyle;
+    body.render.strokeStyle = newStrokeStyle;
+
+    // play mode
+    if (!myMatter.state.playMode) {
+      body.isStatic = true;
     }
   }
 
