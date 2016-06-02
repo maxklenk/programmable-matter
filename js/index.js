@@ -23,7 +23,7 @@ function showMenu(point, body) {
   }
   var canvasContainer = jQuery('#myCanvas');
   var top = point.y + canvasContainer.offset().top - (menu.height())/2;
-  var left = point.x + canvasContainer.offset().left;
+  var left = point.x + 20 + canvasContainer.offset().left;
 
   menu.css({"display": "block", "top": top, "left": left });
 }

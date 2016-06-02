@@ -15,6 +15,7 @@ var myMatter = (function() {
     addRandomRectangle: addRandomRectangle,
     addRectangle: addRectangle,
     addCircle: addCircle,
+    addVector: addVector,
 
     // edit bodies
     setStaticOfBody: setStaticOfBody,
@@ -24,6 +25,7 @@ var myMatter = (function() {
 
     // state
     state: {
+      isHandling: false,
       isDragging: false,
       playMode: true,
       multipleBodiesMode: false,
@@ -188,43 +190,66 @@ var myMatter = (function() {
     World.add(myMatter.world, newCircle);
   }
 
+  function addVector(arrow) {
+    var endPoint = {
+      x: arrow.Start.x + arrow.Direction.x ,
+      y: arrow.Start.y + arrow.Direction.y
+    };
+    var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
+
+    World.add(myMatter.world, newArrow);
+  }
+
   // pass events to virtual mouse
   function mouseDownEvent(event) {
     var element = elementOnPoint({x: event.layerX, y: event.layerY});
-    if (element) {
+
+    // handle new body clicks
+    if (element && myMatter.selectedBody != element.bodies[element.index]) {
       // start dragging
       draggedBody = element.bodies[element.index];
-      myMatter.state.isDragging = true;
+      myMatter.state.isHandling = true;
 
       // click Handler
       startPoint = new Point(event.layerX, event.layerY);
       startTimestamp = Date.now();
     }
 
+    // reset selected element
+    if (myMatter.selectedBody && (!element || myMatter.selectedBody != element.bodies[element.index]) && !myMatter.state.isDrawing) {
+      myMatter.selectedBody.render.lineWidth = 1.5;
+      myMatter.selectedBody.render.strokeStyle = Matter.Common.shadeColor( myMatter.selectedBody.render.fillStyle, -20);
+      myMatter.selectedBody = null;
+    }
+
     myMatter.mouse.mousedown(event);
   }
 
   function mouseMoveEvent(event) {
-    if (myMatter.state.isDragging) {
+    if (myMatter.state.isHandling && !myMatter.state.isDragging) {
       // only move when not a click
       var currentTimestamp = Date.now();
       if (currentTimestamp - startTimestamp > CLICK_DELAY_MS) {
+        myMatter.state.isDragging = true;
         draggedBody.isStatic = false;
-        myMatter.mouse.mousemove(event);
       }
+    }
+
+    if (myMatter.state.isDragging) {
+      myMatter.mouse.mousemove(event);
     }
   }
 
   function mouseUpEvent(event) {
-    if (myMatter.state.isDragging) {
+    if (myMatter.state.isHandling) {
 
       // click Handler
       var endTimestamp = Date.now();
       if (endTimestamp - startTimestamp < CLICK_DELAY_MS) {
         showMenu(startPoint, draggedBody);
         myMatter.selectedBody = draggedBody;
-        // myMatter.selectedBody.render.lineWidth = 3;
-        // myMatter.selectedBody.render.strokeStyle = Matter.Common.shadeColor( myMatter.selectedBody.render.fillStyle, +20);
+        myMatter.selectedBody.render.lineWidth = 3;
+        myMatter.selectedBody.render.strokeStyle = Matter.Common.shadeColor( myMatter.selectedBody.render.fillStyle, +20);
       }
       startPoint = undefined;
       startTimestamp = undefined;
@@ -236,6 +261,7 @@ var myMatter = (function() {
       myMatter.state.isDragging = false;
       draggedBody = null;
     }
+    myMatter.state.isHandling = false;
     myMatter.mouse.mouseup(event);
   }
 

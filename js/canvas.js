@@ -74,7 +74,7 @@ function confirmRebuild() {
 // Mouse Events
 //
 function mouseDownEvent(x, y, button) {
-  if (myMatter.state.isDragging) {
+  if (myMatter.state.isHandling) {
     return;
   }
   document.onselectstart = function() { return false; } // disable drag-select
@@ -85,7 +85,7 @@ function mouseDownEvent(x, y, button) {
     _isDown = true;
     x -= _rc.x;
     y -= _rc.y - getScrollY();
-    
+
     _points.length = 1; // clear
     _points[0] = new Point(x, y);
     drawText("Recording stroke #" + (_strokes.length + 1) + "...");
@@ -101,11 +101,12 @@ function mouseDownEvent(x, y, button) {
 }
 
 function mouseMoveEvent(x, y, button) {
-  if (myMatter.state.isDragging) {
+  if (myMatter.state.isHandling) {
     return;
   }
   if (_isDown)
   {
+    myMatter.state.isDrawing = true;
     x -= _rc.x;
     y -= _rc.y - getScrollY();
     _points[_points.length] = new Point(x, y); // append
@@ -218,6 +219,7 @@ function clearStrokes() {
 
 function drawFinished()
 {
+  myMatter.state.isDrawing = false;
   recognizeBody(_strokes);
   clearStrokes();
 }
@@ -264,6 +266,12 @@ function recognizeBody(strokes) {
         case "Circle":
           var circle = shapeBuilder.getCircle(strokes[0]);
           myMatter.addCircle(circle.x, circle.y, circle.Radius);
+          break;
+        case "Arrow":
+          var arrow = shapeBuilder.getArrow(_strokes);
+          if (arrow) {
+            myMatter.addVector(arrow);
+          }
           break;
         case "X":
           var center = shapeBuilder.getCenterOfX(strokes);
