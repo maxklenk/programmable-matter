@@ -1,3 +1,5 @@
+'use strict';
+
 var myMatter = (function() {
 
   var myMatter = {
@@ -23,6 +25,7 @@ var myMatter = (function() {
     // state
     state: {
       isDragging: false,
+      selectedBody: null,
       playMode: true
     },
 
@@ -32,6 +35,9 @@ var myMatter = (function() {
     world: null,
     mouse: null
   };
+
+  // constants
+  var CLICK_DELAY_MS = 200;
 
   // internals
   var draggedBody = null;
@@ -161,9 +167,11 @@ var myMatter = (function() {
   function mouseDownEvent(event) {
     var element = elementOnPoint({x: event.layerX, y: event.layerY});
     if (element) {
+      // start dragging
       draggedBody = element.bodies[element.index];
-      draggedBody.isStatic = false;
       myMatter.state.isDragging = true;
+
+      // click Handler
       startPoint = new Point(event.layerX, event.layerY);
       startTimestamp = Date.now();
     }
@@ -173,19 +181,28 @@ var myMatter = (function() {
 
   function mouseMoveEvent(event) {
     if (myMatter.state.isDragging) {
-      myMatter.mouse.mousemove(event);
+      // only move when not a click
+      var currentTimestamp = Date.now();
+      if (currentTimestamp - startTimestamp > CLICK_DELAY_MS) {
+        draggedBody.isStatic = false;
+        myMatter.mouse.mousemove(event);
+      }
     }
   }
 
   function mouseUpEvent(event) {
     if (myMatter.state.isDragging) {
+
+      // click Handler
       var endTimestamp = Date.now();
-      if (endTimestamp - startTimestamp < 200) {
+      if (endTimestamp - startTimestamp < CLICK_DELAY_MS) {
         showMenu(startPoint, draggedBody);
+        myMatter.selectedBody = draggedBody;
       }
       startPoint = undefined;
       startTimestamp = undefined;
 
+      // stop dragging
       if (!myMatter.state.playMode || !draggedBody.isMoveable) {
         draggedBody.isStatic = true;
       }
