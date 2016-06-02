@@ -128,8 +128,8 @@ function mouseUpEvent(x, y, button) {
     }
   }
   setTimeout(function() {
-    _numStrokes--;
-    if (_numStrokes == 0) {
+    _numStrokes = _numStrokes <= 0 ? 0 : _numStrokes - 1;
+    if (_numStrokes === 0) {
       drawFinished();
     }
   },1000);
@@ -205,6 +205,12 @@ function onClickClearStrokes() {
   drawText("Canvas cleared.");
 }
 
+function clearStrokes() {
+  _points = [];
+  _strokes = [];
+  _g.clearRect(0, 0, _rc.width, _rc.height);
+}
+
 function drawFinished()
 {
   if (_strokes.length > 1 || (_strokes.length == 1 && _strokes[0].length >= 10))
@@ -231,5 +237,5 @@ function drawFinished()
   {
     drawText("Too little input made. Please try again.");
   }
-  onClickClearStrokes();
+  clearStrokes();
 }

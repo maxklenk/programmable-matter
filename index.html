@@ -85,7 +85,7 @@
 
 <div class="drawable" id="canvas-container">
   <canvas id="myCanvas"
-      onmousedown="myMatter.mouseDownEvent(event); mouseDownEvent(event.clientX, event.clientY, event.button);"
+      onmousedown="resetMenu(); myMatter.mouseDownEvent(event); mouseDownEvent(event.clientX, event.clientY, event.button);"
       onmousemove="myMatter.mouseMoveEvent(event); mouseMoveEvent(event.clientX, event.clientY, event.button);"
       onmouseup="myMatter.mouseUpEvent(event); mouseUpEvent(event.clientX, event.clientY, event.button);"
       oncontextmenu="return false;">
