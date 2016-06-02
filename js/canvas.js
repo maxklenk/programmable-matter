@@ -4,7 +4,6 @@
 // Startup
 //
 var _isDown, _points, _strokes, _r, _g, _rc; // global variables
-var _numStrokes = 0;
 
 function onLoadEvent() {
   _points = new Array(); // point array for current stroke
@@ -81,11 +80,10 @@ function mouseDownEvent(x, y, button) {
   document.onmousedown = function() { return false; } // disable drag-select
   if (button <= 1)
   {
-    _numStrokes++;
     _isDown = true;
     x -= _rc.x;
     y -= _rc.y - getScrollY();
-    
+
     _points.length = 1; // clear
     _points[0] = new Point(x, y);
     drawText("Recording stroke #" + (_strokes.length + 1) + "...");
@@ -125,18 +123,13 @@ function mouseUpEvent(x, y, button) {
       drawText("Stroke #" + _strokes.length + " recorded.");
     }
   }
-  setTimeout(function() {
-    _numStrokes = _numStrokes <= 0 ? 0 : _numStrokes - 1;
-    if (_numStrokes === 0) {
-        if (myMatter.state.multipleBodiesMode) {
-            _multipleBodies.push(_strokes);
-            _strokes = [];
-            _points = [];
-        } else {
-            drawFinished();
-        }
-    }
-},500);
+  if (myMatter.state.multipleBodiesMode) {
+    _multipleBodies.push(_strokes);
+    _strokes = [];
+    _points = [];
+  } else {
+    drawFinished();
+  }
 }
 
 function drawConnectedPoint(from, to) {
