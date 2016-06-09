@@ -239,6 +239,10 @@ var myMatter = (function() {
     var compound = Body.create({
       parts: bodies
     });
+    compound.isMoveable = true;
+    if (!myMatter.state.playMode) {
+      compound.isStatic = true;
+    }
     World.add(myMatter.world, [compound]);
   }
 
