@@ -87,7 +87,6 @@ var myMatter = (function() {
     // run the renderer
     Render.run(myMatter.render);
 
-
     // play mode
     togglePlay();
   }
@@ -207,13 +206,23 @@ var myMatter = (function() {
   }
 
   function addVector(arrow) {
-    var endPoint = {
-      x: arrow.Start.x + arrow.Direction.x ,
-      y: arrow.Start.y + arrow.Direction.y
-    };
-    var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
-
-    World.add(myMatter.world, newArrow);
+    if (myMatter.state.playMode) {
+      var body = myMatter.selectedBody;
+      var position = body.position;
+      var forceDivider = (40 / body.mass) * 30;
+      var force = Matter.Vector.create(
+        arrow.Direction.x / forceDivider,
+        arrow.Direction.y / forceDivider
+      );
+      Matter.Body.applyForce(body, position, force);
+    } else {
+      var endPoint = {
+        x: arrow.Start.x + arrow.Direction.x ,
+        y: arrow.Start.y + arrow.Direction.y
+      };
+      var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
+      World.add(myMatter.world, newArrow);
+    }
   }
 
   function addCompound(bodies) {
