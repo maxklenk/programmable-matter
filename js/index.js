@@ -47,10 +47,28 @@ function rotateBody(degrees) {
 
 function setStaticProperty(isStatic) {
     myMatter.setStaticOfBody(bodyFromMenu, isStatic);
-    resetMenu();
 }
 
 function resetMenu() {
     var menu = jQuery('.element-menu');
     menu.css({"display": "none"})
+}
+
+function setXGravity(x) {
+  myMatter.world.gravity.x = x;
+}
+
+function setYGravity(y) {
+  myMatter.world.gravity.y = y;
+}
+
+function toggleList(element) {
+	var content = $(element).siblings('.content');
+	if (content.is(':hidden')) {
+		content.slideDown('200');
+		$(element).addClass('fa-angle-down').removeClass('fa-angle-right');
+	} else {
+		content.slideUp('200');
+		$(element).addClass('fa-angle-right').removeClass('fa-angle-down');
+	}
 }

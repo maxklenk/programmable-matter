@@ -2,6 +2,41 @@ body {
   background-color: #222222 ;
 }
 
+.global-menu {
+  position: absolute;
+}
+
+.menu-list {
+  list-style-type: none;
+  padding-left: 0;
+  line-height: 1.5;
+  width: 200px;
+}
+
+.global-menu--properties {
+    margin-top: 60px;
+}
+
+.global-menu--properties .title {
+  background-color: #444;
+  padding-left: 5px;
+  display: block;
+  line-height: 1.5;
+}
+
+.global-menu--properties .content {
+  color: grey;
+  padding-left: 5px;
+  display: none;
+}
+
+.button {
+  line-height: 2;
+  display: block;
+  margin-bottom: 10px;
+  width: 200px;
+}
+
 .headline {
   text-align: center;
   color: #6E6E6E;
@@ -44,12 +79,10 @@ body {
 }
 
 .multipleBodiesButton {
-    position: absolute;
-    left: 2em;
-    top: 10em;
     background-color: #5c5;
-    width: 5em;
+    width: 200px;
     height: 5em;
+    line-height: 5em;
     color: #fff;
     text-align: center;
 }
