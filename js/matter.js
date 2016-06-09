@@ -217,32 +217,10 @@ var myMatter = (function() {
   }
 
   function addCompound(bodies) {
-    //   for (var i = 0; i < bodies.length; i++) {
-    //       console.log(bodies[i]);
-    //   }
-    //   var compound = Body.create({
-    //       parts: bodies
-    //   });
-      //
-    //   console.log("addCompound: ");
-    //   console.log(compound);
-    //   World.add(myMatter.world, compound);
-    console.log("add compund");
-
-    var size = 150;
-    var x = 400;
-    var y = 300;
-
-    var partC = bodies[0],
-        partD = Bodies.circle(x + size, y, 30),
-        partE = Bodies.circle(x + size, y + size, 30),
-        partF = Bodies.circle(x, y + size, 30);
-
-    var compoundBodyB = Body.create({
-        parts: [partC, partD, partE, partF]
+    var compound = Body.create({
+      parts: bodies
     });
-
-    World.add(myMatter.world, [compoundBodyB]);
+    World.add(myMatter.world, [compound]);
   }
 
   // pass events to virtual mouse

@@ -215,6 +215,7 @@ function clearStrokes() {
   console.log("clearStrokes");
   _points = [];
   _multipleBodies = [];
+  _bodies = [];
   _strokes = [];
   _g.clearRect(0, 0, _rc.width, _rc.height);
 }
