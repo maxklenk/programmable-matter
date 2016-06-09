@@ -274,7 +274,7 @@ function recognizeBody(strokes) {
         case "Circle":
           var circle = shapeBuilder.getCircle(strokes[0]);
           if (myMatter.state.multipleBodiesMode) {
-              _bodies.push(myMatter.getRectangle(circle.x, circle.y, circle.Radius));
+              _bodies.push(myMatter.getCircle(circle.x, circle.y, circle.Radius));
           } else {
               myMatter.addCircle(circle.x, circle.y, circle.Radius);
           }
