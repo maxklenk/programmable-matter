@@ -80,11 +80,44 @@
   -->
 </div>
 
-<button onclick="myMatter.togglePlay()">play/pause</button>
-<button onclick="myMatter.addRandomRectangle()">add Rectangle</button>
+<div class="global-menu">
+  <button class="button" onclick="myMatter.togglePlay()">play/pause</button>
+  <button class="button" onclick="myMatter.addRandomRectangle()">add Rectangle</button>
+  <div class="multipleBodiesButton" ontouchstart="activateMultipleBodiesMode(event)" ontouchend="deactivateMultipleBodiesMode()">
+      Hold to draw multiple bodies
+  </div>
 
-<div class="multipleBodiesButton" ontouchstart="activateMultipleBodiesMode(event)" ontouchend="deactivateMultipleBodiesMode()">
-    Hold to draw multiple bodies
+  <ul class="global-menu--properties menu-list">
+    <li>
+      <ul class="menu-list">
+        <li class="title fa fa-angle-right" onClick="toggleList(this)"> Gravity </li>
+        <li class="content">
+          <form  oninput="setXGravity(parseInt(xGravity.value) / 1000);">
+            <span> x </span>
+            <input class="global-menu--x-gravity" name="global-menu--x-gravity" id="xGravity" type="range" min="-1000" value="0" max="1000" orient="vertical" >
+            <output style="display: none" name="x" for="xGravity">1</output>
+          </form>
+        </li>
+        <li class="content">
+          <form  oninput="setYGravity(parseInt(yGravity.value) / 1000);">
+            <span> y </span>
+            <input class="global-menu--y-gravity" name="global-menu--y-gravity" id="yGravity" type="range" min="-1000" value="0" max="1000" orient="vertical" >
+            <output style="display: none" name="x" for="yGravity">1</output>
+          </form>
+        </li>
+        <li>
+          <ul class="menu-list">
+            <li class="title fa fa-angle-right" onClick="toggleList(this)"> Stuff </li>
+            <li class="content">
+              Blub
+            </li>
+            <li class="content">
+              Blup
+            </li>
+      </ul>
+    </li>
+
+  </ul>
 </div>
 
 <div class="drawable" id="canvas-container">
@@ -118,7 +151,7 @@
         </form>
       </li>
       <li>
-        <form  oninput="x.value=parseInt(angle.value); rotateBody(parseInt(angle.value));" onmouseup="resetMenu()">
+        <form  oninput="x.value=parseInt(angle.value); rotateBody(parseInt(angle.value));">
             <i class="fa fa-rotate-left"></i>
             <input class="element-menu--angle" name="element-menu--angle" id="angle" type="range" min="-180" value="0" max="180" orient="vertical" >
             <output style="visibility: hidden;" name="x" for="angle">0</output>

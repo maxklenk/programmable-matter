@@ -101,8 +101,15 @@ var myMatter = (function() {
 
     var ball = Bodies.circle(560, 100, 50, {density: 0.005});
     ball.isMoveable = true;
+
     var ground = Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
     ground.render.fillStyle = '#222222';
+    var wall_left = Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
+    wall_left.render.fillStyle = '#222222';
+    var wall_right = Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
+    wall_right.render.fillStyle = '#222222';
+    var ceiling = Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
+    ceiling.render.fillStyle = '#222222';
 
     var elements = [
       stack,
@@ -111,7 +118,10 @@ var myMatter = (function() {
       catapult_stand_right,
       holder,
       ball,
-      ground
+      ground,
+      wall_left,
+      wall_right,
+      ceiling
     ];
 
     // add all of the bodies to the world
