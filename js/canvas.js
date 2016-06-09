@@ -126,18 +126,18 @@ function mouseUpEvent(x, y, button) {
       drawText("Stroke #" + _strokes.length + " recorded.");
     }
   }
-  setTimeout(function() {
-    _numStrokes = _numStrokes <= 0 ? 0 : _numStrokes - 1;
-    if (_numStrokes === 0) {
-        if (myMatter.state.multipleBodiesMode) {
-            _multipleBodies.push(_strokes);
-            _strokes = [];
-            _points = [];
-        } else {
-            drawFinished();
-        }
+  if (myMatter.state.multipleBodiesMode) {
+      _multipleBodies.push(_strokes);
+      _strokes = [];
+      _points = [];
+  } else {
+      setTimeout(function() {
+            _numStrokes = _numStrokes <= 0 ? 0 : _numStrokes - 1;
+            if (_numStrokes === 0) {
+                drawFinished();
+            }
+        },1000);
     }
-},500);
 }
 
 function drawConnectedPoint(from, to) {
@@ -213,6 +213,7 @@ function onClickClearStrokes() {
 function clearStrokes() {
   console.log("clearStrokes");
   _points = [];
+  _multipleBodies = [];
   _strokes = [];
   _g.clearRect(0, 0, _rc.width, _rc.height);
 }
@@ -236,6 +237,7 @@ function deactivateMultipleBodiesMode(event) {
         'background-color': '#5c5'
     });
     myMatter.state.multipleBodiesMode = false;
+    _numStrokes = 0;
     recognizeMultipleBodies();
 }
 
