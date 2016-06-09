@@ -16,6 +16,11 @@ var myMatter = (function() {
     addRectangle: addRectangle,
     addCircle: addCircle,
     addVector: addVector,
+    addCompound: addCompound,
+
+    //create bodies
+    getRectangle: getRectangle,
+    getCircle: getCircle,
 
     // edit bodies
     setStaticOfBody: setStaticOfBody,
@@ -54,7 +59,8 @@ var myMatter = (function() {
     Bodies = Matter.Bodies,
     Composites = Matter.Composites,
     Constraint = Matter.Constraint,
-    Mouse = Matter.Mouse;
+    Mouse = Matter.Mouse,
+    Body = Matter.Body;
 
   init();
 
@@ -173,21 +179,31 @@ var myMatter = (function() {
   }
 
   function addRectangle(x, y, width, height, options) {
+    var newRectangle = getRectangle(x, y, width, height, options);
+    World.add(myMatter.world, newRectangle);
+  }
+
+  function getRectangle(x, y, width, height, options) {
     var newRectangle = Bodies.rectangle(x, y, width, height, options);
     newRectangle.isMoveable = true;
     if (!myMatter.state.playMode) {
       newRectangle.isStatic = true;
     }
-    World.add(myMatter.world, newRectangle);
+    return newRectangle;
   }
 
   function addCircle(x, y, radius, options) {
-    var newCircle = Bodies.circle(x, y, radius, options);
-    newCircle.isMoveable = true;
-    if (!myMatter.state.playMode) {
-      newCircle.isStatic = true;
-    }
+    var newCircle = getCircle(x, y, radius, options);
     World.add(myMatter.world, newCircle);
+  }
+
+  function getCircle(x, y, radius, options) {
+      var newCircle = Bodies.circle(x, y, radius, options);
+      newCircle.isMoveable = true;
+      if (!myMatter.state.playMode) {
+        newCircle.isStatic = true;
+      }
+      return newCircle;
   }
 
   function addVector(arrow) {
@@ -198,6 +214,35 @@ var myMatter = (function() {
     var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
 
     World.add(myMatter.world, newArrow);
+  }
+
+  function addCompound(bodies) {
+    //   for (var i = 0; i < bodies.length; i++) {
+    //       console.log(bodies[i]);
+    //   }
+    //   var compound = Body.create({
+    //       parts: bodies
+    //   });
+      //
+    //   console.log("addCompound: ");
+    //   console.log(compound);
+    //   World.add(myMatter.world, compound);
+    console.log("add compund");
+
+    var size = 150;
+    var x = 400;
+    var y = 300;
+
+    var partC = bodies[0],
+        partD = Bodies.circle(x + size, y, 30),
+        partE = Bodies.circle(x + size, y + size, 30),
+        partF = Bodies.circle(x, y + size, 30);
+
+    var compoundBodyB = Body.create({
+        parts: [partC, partD, partE, partF]
+    });
+
+    World.add(myMatter.world, [compoundBodyB]);
   }
 
   // pass events to virtual mouse

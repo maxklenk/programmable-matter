@@ -10,6 +10,7 @@ function onLoadEvent() {
   _points = new Array(); // point array for current stroke
   _strokes = new Array(); // array of point arrays
   _multipleBodies = new Array();
+  _bodies = new Array();
 
   _r = new NDollarRecognizer(document.getElementById('useBoundedRotationInvariance').checked);
 
@@ -236,9 +237,9 @@ function deactivateMultipleBodiesMode(event) {
     jQuery('.multipleBodiesButton').css({
         'background-color': '#5c5'
     });
-    myMatter.state.multipleBodiesMode = false;
     _numStrokes = 0;
     recognizeMultipleBodies();
+    myMatter.state.multipleBodiesMode = false;
 }
 
 function checkForModeActivation(event) {
@@ -263,11 +264,20 @@ function recognizeBody(strokes) {
       switch (result.Name) {
         case "Rectangle":
           var rectangle = shapeBuilder.getRectangle(strokes[0]);
-          myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
+          if (myMatter.state.multipleBodiesMode) {
+              _bodies.push(myMatter.getRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height));
+          } else {
+              myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
+          }
           break;
         case "Circle":
           var circle = shapeBuilder.getCircle(strokes[0]);
-          myMatter.addCircle(circle.x, circle.y, circle.Radius);
+          if (myMatter.state.multipleBodiesMode) {
+              _bodies.push(myMatter.getRectangle(circle.x, circle.y, circle.Radius));
+          } else {
+              myMatter.addCircle(circle.x, circle.y, circle.Radius);
+          }
+
           break;
         case "Arrow":
           var arrow = shapeBuilder.getArrow(_strokes);
@@ -292,5 +302,8 @@ function recognizeMultipleBodies() {
     for (var i = 0; i < _multipleBodies.length; i++) {
         recognizeBody(_multipleBodies[i]);
     }
+    console.log("Bodies: ");
+    console.log(_bodies);
+    myMatter.addCompound(_bodies);
     clearStrokes();
 }
