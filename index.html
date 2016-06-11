@@ -15,7 +15,7 @@
 
 </head>
 
-<body onload="onLoadEvent()" onkeydown="checkForModeActivation(event)" onkeyup="checkForModeDeactivation(event)">
+<body onload="myCanvas.init()" onkeydown="myCanvas.checkForModeActivation(event)" onkeyup="myCanvas.checkForModeDeactivation(event)">
 <h1 class="headline">programmable matter</h1>
 
 
@@ -122,9 +122,9 @@
 
 <div class="drawable" id="canvas-container">
   <canvas id="myCanvas"
-      onmousedown="resetMenu(); myMatter.mouseDownEvent(event); mouseDownEvent(event.clientX, event.clientY, event.button);"
-      onmousemove="myMatter.mouseMoveEvent(event); mouseMoveEvent(event.clientX, event.clientY, event.button);"
-      onmouseup="myMatter.mouseUpEvent(event); mouseUpEvent(event.clientX, event.clientY, event.button);"
+      onmousedown="resetMenu(); myMatter.mouseDownEvent(event); myCanvas.mouseDownEvent(event.clientX, event.clientY, event.button);"
+      onmousemove="myMatter.mouseMoveEvent(event); myCanvas.mouseMoveEvent(event.clientX, event.clientY, event.button);"
+      onmouseup="myMatter.mouseUpEvent(event); myCanvas.mouseUpEvent(event.clientX, event.clientY, event.button);"
       oncontextmenu="return false;">
     <span style="background-color:#ffff88;">The &lt;canvas&gt; element is not supported by this browser.</span>
   </canvas>
