@@ -179,14 +179,23 @@ var myCanvas = (function() {
     }
 
     function checkForModeActivation(event) {
-        if (event.keyCode === 17) {
-            activateMultipleBodiesMode();
+        switch (event.keyCode) {
+            case 16:
+                activateMultipleBodiesMode();
+                break;
+            case 32:
+                myMatter.togglePlay();
+                break;
+            default:
         }
     }
 
     function checkForModeDeactivation(event) {
-        if (event.keyCode === 17) {
-            deactivateMultipleBodiesMode();
+        switch (event.keyCode) {
+            case 16:
+                deactivateMultipleBodiesMode();
+                break;
+            default:
         }
     }
 
