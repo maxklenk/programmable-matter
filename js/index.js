@@ -4,7 +4,6 @@ var lastScale = undefined;
 var bodyProperties = {};
 
 function showMenu(point, body) {
-  console.log(body);
   bodyFromMenu = body;
   var menu = jQuery('.element-menu');
   bodyProperties.angle = body.angle;

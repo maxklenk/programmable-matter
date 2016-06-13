@@ -236,6 +236,9 @@ var myMatter = (function() {
   }
 
   function addCompound(bodies) {
+    if (bodies.length === 0) {
+        return;
+    }
     var compound = Body.create({
       parts: bodies
     });

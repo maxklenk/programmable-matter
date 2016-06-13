@@ -10,7 +10,7 @@ var myCanvas = (function() {
         mouseMoveEvent: mouseMoveEvent
     };
 
-    var _points, _strokes, _r, _g, _rc, _numStrokes, _multipleBodies, _bodies;
+    var _points, _strokes, _r, _g, _rc, _numStrokes, _bodies, _isDown, _shapeBuilder;
 
 
     // This file handles the drawing
@@ -22,10 +22,9 @@ var myCanvas = (function() {
     function init() {
         _points = new Array(); // point array for current stroke
         _strokes = new Array(); // array of point arrays
-        _multipleBodies = new Array();
         _bodies = new Array();
         _numStrokes = 0;
-
+        _shapeBuilder = new ShapeBuilder();
         _r = new NDollarRecognizer(document.getElementById('useBoundedRotationInvariance').checked);
 
         var canvas = document.getElementById('myCanvas');
@@ -61,6 +60,7 @@ var myCanvas = (function() {
             return;
         }
 
+        _isDown = true;
         myMatter.state.isDrawing = true;
         document.onselectstart = function() { return false; } // disable drag-select
         document.onmousedown = function() { return false; } // disable drag-select
@@ -82,7 +82,7 @@ var myCanvas = (function() {
         if (myMatter.state.isHandling) {
             return;
         }
-        if (myMatter.state.isDrawing) {
+        if (myMatter.state.isDrawing && _isDown) {
             x -= _rc.x;
             y -= _rc.y - getScrollY();
             _points[_points.length] = new Point(x, y); // append
@@ -93,12 +93,13 @@ var myCanvas = (function() {
     function mouseUpEvent(x, y, button) {
         document.onselectstart = function() { return true; } // enable drag-select
         document.onmousedown = function() { return true; } // enable drag-select
+        _isDown = false;
 
         _strokes[_strokes.length] = _points.slice(); // add new copy to set
         drawText("Stroke #" + _strokes.length + " recorded.");
 
         if (myMatter.state.multipleBodiesMode) {
-            _multipleBodies.push(_strokes);
+            recognizeBody(_strokes);
             _strokes = [];
             _points = [];
         } else {
@@ -142,7 +143,6 @@ var myCanvas = (function() {
 
     function clearCanvas() {
         _points = [];
-        _multipleBodies = [];
         _bodies = [];
         _strokes = [];
         _g.clearRect(0, 0, _rc.width, _rc.height);
@@ -192,53 +192,45 @@ var myCanvas = (function() {
     }
 
     function recognizeBody(strokes) {
-        if (strokes.length > 1 || (strokes.length == 1 && strokes[0].length >= 10))
-        {
-            var result = _r.Recognize(strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
-            drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
-            console.log(result.Name);
-            var shapeBuilder = new ShapeBuilder();
-            switch (result.Name) {
-                case "Rectangle":
-                var rectangle = shapeBuilder.getRectangle(strokes[0]);
-                if (myMatter.state.multipleBodiesMode) {
-                    _bodies.push(myMatter.getRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height));
-                } else {
-                    myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
-                }
-                break;
-                case "Circle":
-                var circle = shapeBuilder.getCircle(strokes[0]);
-                if (myMatter.state.multipleBodiesMode) {
-                    _bodies.push(myMatter.getCircle(circle.x, circle.y, circle.Radius));
-                } else {
-                    myMatter.addCircle(circle.x, circle.y, circle.Radius);
-                }
+        if (strokes.length == 1 && strokes[0].length < 10) {
+            drawText("Too little input made. Please try again.");
+            return;
+        }
 
-                break;
-                case "Arrow":
-                var arrow = shapeBuilder.getArrow(_strokes);
-                if (arrow) {
-                    myMatter.addVector(arrow);
-                }
-                break;
-                case "X":
-                var center = shapeBuilder.getCenterOfX(strokes);
-                myMatter.removeBodyAt(center);
+        var result = _r.Recognize(strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
+        drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+        console.log(result.Name);
+        switch (result.Name) {
+            case "Rectangle":
+            var rectangle = _shapeBuilder.getRectangle(strokes[0]);
+            if (myMatter.state.multipleBodiesMode) {
+                _bodies.push(myMatter.getRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height));
+            } else {
+                myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
+            }
+            break;
+            case "Circle":
+            var circle = _shapeBuilder.getCircle(strokes[0]);
+            if (myMatter.state.multipleBodiesMode) {
+                _bodies.push(myMatter.getCircle(circle.x, circle.y, circle.Radius));
+            } else {
+                myMatter.addCircle(circle.x, circle.y, circle.Radius);
             }
 
-        }
-        else
-        {
-            drawText("Too little input made. Please try again.");
+            break;
+            case "Arrow":
+            var arrow = _shapeBuilder.getArrow(_strokes);
+            if (arrow) {
+                myMatter.addVector(arrow);
+            }
+            break;
+            case "X":
+            var center = _shapeBuilder.getCenterOfX(strokes);
+            myMatter.removeBodyAt(center);
         }
     }
 
     function recognizeMultipleBodies() {
-        console.log(_multipleBodies);
-        for (var i = 0; i < _multipleBodies.length; i++) {
-            recognizeBody(_multipleBodies[i]);
-        }
         console.log("Bodies: ");
         console.log(_bodies);
         myMatter.addCompound(_bodies);
