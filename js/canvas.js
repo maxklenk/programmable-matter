@@ -55,18 +55,6 @@ var myCanvas = (function() {
         return {x: cx, y: cy, width: w, height: h};
     }
 
-    function getScrollY() {
-        var scrollY = 0;
-        if (typeof(document.body.parentElement) != 'undefined')
-        {
-            scrollY = document.body.parentElement.scrollTop; // IE
-        }
-        else if (typeof(window.pageYOffset) != 'undefined')
-        {
-            scrollY = window.pageYOffset; // FF
-        }
-        return scrollY;
-    }
 
     function mouseDownEvent(x, y, button) {
         if (myMatter.state.isHandling) {
@@ -137,6 +125,10 @@ var myCanvas = (function() {
         _g.fillRect(0, 0, _rc.width, 20);
         _g.fillStyle = "rgb(0,0,255)";
         _g.fillText(str, 1, 14);
+    }
+
+    function getScrollY() {
+        return window.pageYOffset;
     }
 
     function rand(low, high) {
