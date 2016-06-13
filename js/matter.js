@@ -221,14 +221,14 @@ var myMatter = (function() {
       var position = body.position;
       var forceDivider = (40 / body.mass) * 30;
       var force = Matter.Vector.create(
-        arrow.Direction.x / forceDivider,
-        arrow.Direction.y / forceDivider
+        arrow.direction.x / forceDivider,
+        arrow.direction.y / forceDivider
       );
       Matter.Body.applyForce(body, position, force);
     } else {
       var endPoint = {
-        x: arrow.Start.x + arrow.Direction.x ,
-        y: arrow.Start.y + arrow.Direction.y
+        x: arrow.start.x + arrow.direction.x ,
+        y: arrow.start.y + arrow.direction.y
       };
       var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
       World.add(myMatter.world, newArrow);

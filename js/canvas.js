@@ -62,8 +62,6 @@ var myCanvas = (function() {
 
         _isDown = true;
         myMatter.state.isDrawing = true;
-        document.onselectstart = function() { return false; } // disable drag-select
-        document.onmousedown = function() { return false; } // disable drag-select
 
         _numStrokes++;
         x -= _rc.x;
@@ -91,8 +89,6 @@ var myCanvas = (function() {
     }
 
     function mouseUpEvent(x, y, button) {
-        document.onselectstart = function() { return true; } // enable drag-select
-        document.onmousedown = function() { return true; } // enable drag-select
         _isDown = false;
 
         _strokes[_strokes.length] = _points.slice(); // add new copy to set
@@ -196,7 +192,7 @@ var myCanvas = (function() {
             drawText("Too little input made. Please try again.");
             return;
         }
-
+        console.log(strokes);
         var result = _r.Recognize(strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
         drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
         console.log(result.Name);
@@ -204,17 +200,17 @@ var myCanvas = (function() {
             case "Rectangle":
             var rectangle = _shapeBuilder.getRectangle(strokes[0]);
             if (myMatter.state.multipleBodiesMode) {
-                _bodies.push(myMatter.getRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height));
+                _bodies.push(myMatter.getRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height));
             } else {
-                myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.Width, rectangle.Height);
+                myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
             }
             break;
             case "Circle":
             var circle = _shapeBuilder.getCircle(strokes[0]);
             if (myMatter.state.multipleBodiesMode) {
-                _bodies.push(myMatter.getCircle(circle.x, circle.y, circle.Radius));
+                _bodies.push(myMatter.getCircle(circle.x, circle.y, circle.radius));
             } else {
-                myMatter.addCircle(circle.x, circle.y, circle.Radius);
+                myMatter.addCircle(circle.x, circle.y, circle.radius);
             }
 
             break;

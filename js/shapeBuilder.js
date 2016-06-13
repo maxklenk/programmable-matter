@@ -9,22 +9,27 @@ function ShapeBuilder() {
   {
     this.x = x;
     this.y = y;
-    this.Width = width;
-    this.Height = height;
+    this.width = width;
+    this.height = height;
   }
 
   function Circle(x, y, radius) // constructor
   {
     this.x = x;
     this.y = y;
-    this.Radius = radius;
+    this.radius = radius;
   }
 
   function Arrow(start, direction, magnitude)  // constructor
   {
-    this.Start = start;
-    this.Direction = direction;
-    this.Magnitude = magnitude;
+    this.start = start;
+    this.direction = direction;
+    this.magnitude = magnitude;
+  }
+
+  function Line(start, end) {
+      this.start = start;
+      this.end = end;
   }
 
   // Is currently bounding box; could be improved to be more precise
@@ -73,6 +78,14 @@ function ShapeBuilder() {
     var direction = new Point(end.x - start.x, end.y - start.y);
     var magnitude = Math.sqrt(Math.pow(direction.x, 2), Math.pow(direction.y, 2));
     return new Arrow(start, direction, magnitude);
+  }
+
+  this.getLine = function(strokes) {
+      if (strokes.length != 1) {
+          return;
+      }
+
+      return new Line(strokes[0], strokes[strokes.length - 1]);
   }
 
   this.getCenterOfX = function(strokes) {
