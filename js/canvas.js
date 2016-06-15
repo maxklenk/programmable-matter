@@ -198,31 +198,36 @@ var myCanvas = (function() {
         console.log(result.Name);
         switch (result.Name) {
             case "Rectangle":
-            var rectangle = _shapeBuilder.getRectangle(strokes[0]);
-            if (myMatter.state.multipleBodiesMode) {
-                _bodies.push(myMatter.getRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height));
-            } else {
-                myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-            }
-            break;
+                var rectangle = _shapeBuilder.getRectangle(strokes[0]);
+                if (myMatter.state.multipleBodiesMode) {
+                    _bodies.push(myMatter.getRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height));
+                } else {
+                    myMatter.addRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+                }
+                break;
             case "Circle":
-            var circle = _shapeBuilder.getCircle(strokes[0]);
-            if (myMatter.state.multipleBodiesMode) {
-                _bodies.push(myMatter.getCircle(circle.x, circle.y, circle.radius));
-            } else {
-                myMatter.addCircle(circle.x, circle.y, circle.radius);
-            }
-
-            break;
+                var circle = _shapeBuilder.getCircle(strokes[0]);
+                if (myMatter.state.multipleBodiesMode) {
+                    _bodies.push(myMatter.getCircle(circle.x, circle.y, circle.radius));
+                } else {
+                    myMatter.addCircle(circle.x, circle.y, circle.radius);
+                }
+                break;
             case "Arrow":
-            var arrow = _shapeBuilder.getArrow(_strokes);
-            if (arrow) {
-                myMatter.addVector(arrow);
-            }
-            break;
+                var arrow = _shapeBuilder.getArrow(_strokes);
+                if (arrow) {
+                    myMatter.addVector(arrow);
+                }
+                break;
+            case "Line":
+                var line = _shapeBuilder.getLine(_strokes);
+                if (line) {
+                    myMatter.addLine(line);
+                }
+                break;
             case "X":
-            var center = _shapeBuilder.getCenterOfX(strokes);
-            myMatter.removeBodyAt(center);
+                var center = _shapeBuilder.getCenterOfX(strokes);
+                myMatter.removeBodyAt(center);
         }
     }
 

@@ -27,9 +27,10 @@ function ShapeBuilder() {
     this.magnitude = magnitude;
   }
 
-  function Line(start, end) {
+  function Line(start, end, direction) {
       this.start = start;
       this.end = end;
+      this.direction = direction;
   }
 
   // Is currently bounding box; could be improved to be more precise
@@ -84,8 +85,11 @@ function ShapeBuilder() {
       if (strokes.length != 1) {
           return;
       }
+      var start = strokes[0][0];
+      var end = strokes[0][strokes[0].length - 1];
+      var direction = new Point(end.x - start.x, end.y - start.y);
 
-      return new Line(strokes[0], strokes[strokes.length - 1]);
+      return new Line(start, end, direction);
   }
 
   this.getCenterOfX = function(strokes) {

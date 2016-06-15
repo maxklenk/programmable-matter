@@ -16,6 +16,7 @@ var myMatter = (function() {
     addRectangle: addRectangle,
     addCircle: addCircle,
     addVector: addVector,
+    addLine: addLine,
     addCompound: addCompound,
 
     //create bodies
@@ -216,23 +217,23 @@ var myMatter = (function() {
   }
 
   function addVector(arrow) {
-    if (myMatter.state.playMode) {
-      var body = myMatter.selectedBody;
-      var position = body.position;
-      var forceDivider = (40 / body.mass) * 30;
-      var force = Matter.Vector.create(
+    var body = myMatter.selectedBody;
+    var position = body.position;
+    var forceDivider = (40 / body.mass) * 30;
+    var force = Matter.Vector.create(
         arrow.direction.x / forceDivider,
         arrow.direction.y / forceDivider
-      );
-      Matter.Body.applyForce(body, position, force);
-    } else {
-      var endPoint = {
-        x: arrow.start.x + arrow.direction.x ,
-        y: arrow.start.y + arrow.direction.y
-      };
-      var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
-      World.add(myMatter.world, newArrow);
-    }
+    );
+    Matter.Body.applyForce(body, position, force);
+  }
+
+  function addLine(line) {
+    var endPoint = {
+      x: line.start.x + line.direction.x ,
+      y: line.start.y + line.direction.y
+    };
+    var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
+    World.add(myMatter.world, newArrow);
   }
 
   function addCompound(bodies) {
