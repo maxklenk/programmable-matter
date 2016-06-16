@@ -27,8 +27,11 @@ var myMatter = (function() {
     setStaticOfBody: setStaticOfBody,
     setAngleOfBody: setAngleOfBody,
     setScaleOfBody: setScaleOfBody,
-    setDensityOfBody: setDensityOfBody,
     removeBodyAt: removeBodyAt,
+
+    // vector canvas
+    clearVectors: clearVectors,
+    drawArrow: drawArrow,
 
     // state
     state: {
@@ -83,12 +86,58 @@ var myMatter = (function() {
     createVirtualMouse();
     setRenderOptions();
 
+    myMatter.vectorCanvas = document.getElementById('vectorCanvas');
     // run the engine
     Engine.run(myMatter.engine);
 
     // run the renderer
     Render.run(myMatter.render);
 
+  }
+
+  function drawArrow(from, to) {
+      var headlen = 10;
+      var angle = Math.atan2(toy-fromy,tox-fromx);
+      var context = myMatter.vectorCanvas.getContext("2d");
+      var fromx = from.x;
+      var fromy = from.y;
+      var tox = to.x;
+      var toy = to.y;
+      var headlen = 15;
+
+      var angle = Math.atan2(toy-fromy,tox-fromx);
+
+      //starting path of the arrow from the start square to the end square and drawing the stroke
+      context.beginPath();
+      context.moveTo(fromx, fromy);
+      context.lineTo(tox, toy);
+      context.strokeStyle = "#cc0000";
+      context.lineWidth = 2;
+      context.stroke();
+
+      //starting a new path from the head of the arrow to one of the sides of the point
+      context.beginPath();
+      context.moveTo(tox, toy);
+      context.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+
+      //path from the side point of the arrow, to the other side point
+      context.lineTo(tox-headlen*Math.cos(angle+Math.PI/7),toy-headlen*Math.sin(angle+Math.PI/7));
+
+      //path from the side point back to the tip of the arrow, and then again to the opposite side point
+      context.lineTo(tox, toy);
+      context.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+
+      //draws the paths created above
+      context.strokeStyle = "#cc0000";
+      context.lineWidth = 2;
+      context.stroke();
+      context.fillStyle = "#cc0000";
+      context.fill();
+  }
+
+  function clearVectors() {
+      var context = myMatter.vectorCanvas.getContext("2d");
+      context.clearRect(0, 0, myMatter.vectorCanvas.width, myMatter.vectorCanvas.height);
   }
 
   function createDefaultBodies() {
@@ -180,6 +229,9 @@ var myMatter = (function() {
         }
       }
     }
+    if (myMatter.state.playMode) {
+        myMatter.clearVectors();
+    }
 
     // This should do the trick, but it doesn't work
     // http://brm.io/matter-js/docs/#property_timing.timeScale
@@ -222,7 +274,7 @@ var myMatter = (function() {
   function addVector(arrow) {
     var body = myMatter.selectedBody;
     var position = body.position;
-    var forceDivider = (40 / body.mass) * 30;
+    var forceDivider = (40 / body.mass) * 50;
     var force = Matter.Vector.create(
         arrow.direction.x / forceDivider,
         arrow.direction.y / forceDivider
@@ -230,7 +282,6 @@ var myMatter = (function() {
     if (myMatter.state.playMode) {
         Matter.Body.applyForce(body, position, force);
     } else {
-        // TODO draw vector
         if (body.nextForce) {
             var resultingForce = Matter.Vector.create(
                 body.nextForce.x + force.x,
@@ -241,6 +292,11 @@ var myMatter = (function() {
             body.nextForce = force;
             console.log(body);
         }
+        var endPosition = {
+            x: position.x + arrow.direction.x,
+            y: position.y + arrow.direction.y
+        }
+        myMatter.drawArrow(position, endPosition)
     }
   }
 
@@ -404,10 +460,6 @@ var myMatter = (function() {
 
   function setScaleOfBody(body, scaleX, scaleY) {
     Matter.Body.scale(body, scaleX, scaleY);
-  }
-
-  function setDensityOfBody(body, density) {
-    Matter.Body.setDensity(body, density);
   }
 
   return myMatter;
