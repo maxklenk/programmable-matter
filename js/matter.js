@@ -88,8 +88,6 @@ var myMatter = (function() {
     // run the renderer
     Render.run(myMatter.render);
 
-    // play mode
-    togglePlay();
   }
 
   function createDefaultBodies() {
