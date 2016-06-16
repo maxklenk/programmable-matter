@@ -173,6 +173,10 @@ var myMatter = (function() {
     for (var i in allBodies) {
       if (allBodies[i].isMoveable) {
         allBodies[i].isStatic = !myMatter.state.playMode;
+        if (myMatter.state.playMode && allBodies[i].nextForce) {
+            Matter.Body.applyForce(allBodies[i], allBodies[i].position, allBodies[i].nextForce);
+            allBodies[i].nextForce = undefined;
+        }
       }
     }
 
@@ -222,7 +226,21 @@ var myMatter = (function() {
         arrow.direction.x / forceDivider,
         arrow.direction.y / forceDivider
     );
-    Matter.Body.applyForce(body, position, force);
+    if (myMatter.state.playMode) {
+        Matter.Body.applyForce(body, position, force);
+    } else {
+        // TODO draw vector
+        if (body.nextForce) {
+            var resultingForce = Matter.Vector.create(
+                body.nextForce.x + force.x,
+                body.nextForce.y + force.y
+            )
+            body.nextForce = resultingForce;
+        } else {
+            body.nextForce = force;
+            console.log(body);
+        }
+    }
   }
 
   function addLine(line) {
