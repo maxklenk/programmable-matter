@@ -121,6 +121,11 @@
 </div>
 
 <div class="drawable" id="canvas-container">
+  <!-- matter.js -->
+  <canvas id="previewAnimation"></canvas>
+  <canvas id="mainAnimation"></canvas>
+
+  <!-- draw -->
   <canvas id="myCanvas"
       onmousedown="resetMenu(); myMatter.mouseDownEvent(event); myCanvas.mouseDownEvent(event.clientX, event.clientY, event.button);"
       onmousemove="myMatter.mouseMoveEvent(event); myCanvas.mouseMoveEvent(event.clientX, event.clientY, event.button);"

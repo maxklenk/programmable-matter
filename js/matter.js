@@ -19,7 +19,7 @@ var myMatter = (function() {
     addLine: addLine,
     addCompound: addCompound,
 
-    //create bodies
+    // create bodies
     getRectangle: getRectangle,
     getCircle: getCircle,
 
@@ -73,7 +73,7 @@ var myMatter = (function() {
     myMatter.world = myMatter.engine.world;
 
     myMatter.render = Render.create({
-      element: document.getElementById('canvas-container'),
+      canvas: document.getElementById('mainAnimation'),
       engine: myMatter.engine
     });
 
@@ -110,13 +110,13 @@ var myMatter = (function() {
     ball.isMoveable = true;
 
     var ground = Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
-    ground.render.fillStyle = '#222222';
+    ground.render.fillStyle = 'transparent';
     var wall_left = Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
-    wall_left.render.fillStyle = '#222222';
+    wall_left.render.fillStyle = 'transparent';
     var wall_right = Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
-    wall_right.render.fillStyle = '#222222';
+    wall_right.render.fillStyle = 'transparent';
     var ceiling = Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
-    ceiling.render.fillStyle = '#222222';
+    ceiling.render.fillStyle = 'transparent';
 
     var elements = [
       stack,
@@ -164,7 +164,7 @@ var myMatter = (function() {
     renderOptions.showConvexHulls = false;
     renderOptions.showInternalEdges = false;
     renderOptions.showSeparations = false;
-    renderOptions.background = '#222222';
+    renderOptions.background = 'transparent';
   }
 
   // pause movement of all elements
@@ -184,8 +184,24 @@ var myMatter = (function() {
   }
 
   function addRandomRectangle() {
-    var x = rand(30, 790);
-    addRectangle(x, 150, 40, 40);
+    // create a Matter.js engine
+    var copyMatter = {};
+    copyMatter.engine = Engine.create();
+    copyMatter.world = copyMatter.engine.world;
+
+    copyMatter.render = Render.create({
+      canvas: document.getElementById('previewAnimation'),
+      engine: copyMatter.engine
+    });
+
+    // run the engine
+    Engine.run(copyMatter.engine);
+
+    // run the renderer
+    Render.run(copyMatter.render);
+
+    var ball = Bodies.circle(560, 100, 50, {density: 0.005});
+    World.add(copyMatter.world, ball);
   }
 
   function addRectangle(x, y, width, height, options) {

@@ -1,5 +1,5 @@
 body {
-  background-color: #222222 ;
+  background-color: red; /*#222222;*/
 }
 
 .global-menu {
@@ -45,11 +45,15 @@ body {
 
 .drawable {
   text-align: center;
+  position: relative;
+  width: 800px;
+  margin: auto;
 }
-
-#myCanvas {
+.drawable canvas {
   position: absolute;
-  background: none;
+  top: 0;
+  left: 0;
+  background: transparent !important;
 }
 
 .element-menu {
@@ -61,7 +65,7 @@ body {
   list-style-type: none;
   color: white;
   line-height: 2.5;
-  padding.left: 20px;
+  padding-left: 20px;
   background: rgba(34, 34, 34, 0.75);
 }
 
