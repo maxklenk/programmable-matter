@@ -25,17 +25,14 @@ var myCanvas = (function() {
         _bodies = new Array();
         _numStrokes = 0;
         _shapeBuilder = new ShapeBuilder();
-        _r = new NDollarRecognizer(document.getElementById('useBoundedRotationInvariance').checked);
+        _r = new NDollarRecognizer(false);
 
         var canvas = document.getElementById('myCanvas');
         canvas.setAttribute('height', 600);
         canvas.setAttribute('width', 800);
         _g = canvas.getContext('2d');
-        _g.lineWidth = 3;
-        _g.font = "16px Gentilis";
         _rc = getCanvasRect(canvas); // canvas rect on page
         _g.fillStyle = "rgb(255,255,136)";
-        _g.fillRect(0, 0, _rc.width, 20);
 
     }
 
@@ -69,7 +66,6 @@ var myCanvas = (function() {
 
         _points.length = 1; // clear
         _points[0] = new Point(x, y);
-        drawText("Recording stroke #" + (_strokes.length + 1) + "...");
         var clr = "rgb(" + rand(0,200) + "," + rand(0,200) + "," + rand(0,200) + ")";
         _g.strokeStyle = clr;
         _g.fillStyle = clr;
@@ -92,7 +88,6 @@ var myCanvas = (function() {
         _isDown = false;
 
         _strokes[_strokes.length] = _points.slice(); // add new copy to set
-        drawText("Stroke #" + _strokes.length + " recorded.");
 
         if (myMatter.state.multipleBodiesMode) {
             recognizeBody(_strokes);
@@ -115,13 +110,6 @@ var myCanvas = (function() {
         _g.lineTo(_points[to].x, _points[to].y);
         _g.closePath();
         _g.stroke();
-    }
-
-    function drawText(str) {
-        _g.fillStyle = "rgb(255,255,136)";
-        _g.fillRect(0, 0, _rc.width, 20);
-        _g.fillStyle = "rgb(0,0,255)";
-        _g.fillText(str, 1, 14);
     }
 
     function getScrollY() {
@@ -189,12 +177,10 @@ var myCanvas = (function() {
 
     function recognizeBody(strokes) {
         if (strokes.length == 1 && strokes[0].length < 10) {
-            drawText("Too little input made. Please try again.");
             return;
         }
         console.log(strokes);
-        var result = _r.Recognize(strokes, document.getElementById('useBoundedRotationInvariance').checked, document.getElementById('requireSameNoOfStrokes').checked, document.getElementById('useProtractor').checked);
-        drawText("Result: " + result.Name + " (" + round(result.Score,2) + ").");
+        var result = _r.Recognize(strokes, false, false, false);
         console.log(result.Name);
         switch (result.Name) {
             case "Rectangle":

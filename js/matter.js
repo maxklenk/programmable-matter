@@ -27,6 +27,7 @@ var myMatter = (function() {
     setStaticOfBody: setStaticOfBody,
     setAngleOfBody: setAngleOfBody,
     setScaleOfBody: setScaleOfBody,
+    setDensityOfBody: setDensityOfBody,
     removeBodyAt: removeBodyAt,
 
     // state
@@ -387,6 +388,10 @@ var myMatter = (function() {
 
   function setScaleOfBody(body, scaleX, scaleY) {
     Matter.Body.scale(body, scaleX, scaleY);
+  }
+
+  function setDensityOfBody(body, density) {
+    Matter.Body.setDensity(body, density);
   }
 
   return myMatter;
