@@ -19,6 +19,7 @@ var myLevels = (function() {
   }
 
   function catapult() {
+      myLevels.clearWorld();
       myLevels.addFourWalls();
 
       var stack = Matter.Composites.stack(250, 255, 1, 6, 0, 0, function(x, y) {
@@ -63,7 +64,6 @@ var myLevels = (function() {
   }
 
   function addRightWall() {
-      console.log("right wall");
       var wall_right = Matter.Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
       wall_right.render.fillStyle = '#222222';
       Matter.World.add(myMatter.world, wall_right);
