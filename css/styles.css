@@ -55,6 +55,7 @@ body {
 .element-menu {
   display: none;
   position: absolute;
+  z-index: 10;
 }
 
 .element-menu ul {

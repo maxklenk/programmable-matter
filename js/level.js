@@ -16,6 +16,8 @@ var myLevels = (function() {
       myMatter.world.composites = [];
       myMatter.world.constraints = [];
       myMatter.world.bodies = [];
+
+      myLevels.addFourWalls();
   }
 
   function catapult() {
