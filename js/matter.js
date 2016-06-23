@@ -12,7 +12,6 @@ var myMatter = (function() {
     togglePlay: togglePlay,
 
     // add bodies
-    addRandomRectangle: addRandomRectangle,
     addRectangle: addRectangle,
     addCircle: addCircle,
     addVector: addVector,
@@ -35,14 +34,16 @@ var myMatter = (function() {
       isDragging: false,
       playMode: true,
       multipleBodiesMode: false,
-      selectedBody: null
+      selectedBody: null,
+      enablePreview: false
     },
 
     // matter
     engine: null,
     render: null,
     world: null,
-    mouse: null
+    mouse: null,
+    mouseConstraint: null
   };
 
   // constants
@@ -53,6 +54,12 @@ var myMatter = (function() {
   var startPoint = null;
   var startTimestamp = null;
 
+  // internals: preview animation
+  var NO_MOVE_DIST = 2;
+  var NO_ANIMATION_MS = 600;
+  var lastDragPoint = null;
+  var lastAnimationTimestamp = 0;
+
   // Matter.js module aliases
   var Engine = Matter.Engine,
     Render = Matter.Render,
@@ -60,8 +67,10 @@ var myMatter = (function() {
     Bodies = Matter.Bodies,
     Composites = Matter.Composites,
     Constraint = Matter.Constraint,
+    MouseConstraint = Matter.MouseConstraint,
     Mouse = Matter.Mouse,
     Body = Matter.Body;
+  var resurrect = new Resurrect({ cleanup: true, revive: false });
 
   init();
 
@@ -80,7 +89,7 @@ var myMatter = (function() {
 
     // setup
     createDefaultBodies();
-    createVirtualMouse();
+    createVirtualMouse(myMatter);
     setRenderOptions();
 
     // run the engine
@@ -137,14 +146,14 @@ var myMatter = (function() {
   }
 
   // add mouse control
-  function createVirtualMouse() {
-    myMatter.mouse = Mouse.create(myMatter.render.canvas);
-    var MouseConstraint = Matter.MouseConstraint;
-    var mouseConstraint = MouseConstraint.create(myMatter.engine, {
-      element: myMatter.render.canvas,
-      mouse: myMatter.mouse
+  function createVirtualMouse(matter) {
+    matter.mouse = Mouse.create(matter.render.canvas);
+    matter.mouseConstraint = MouseConstraint.create(matter.engine, {
+      element: matter.render.canvas,
+      mouse: matter.mouse
     });
-    World.add(myMatter.world, mouseConstraint);
+    matter.mouseConstraint.constraint.stiffness = 0.8; // keep body on cursor
+    World.add(matter.world, matter.mouseConstraint);
   }
 
   function setRenderOptions() {
@@ -184,10 +193,12 @@ var myMatter = (function() {
     // engine.timing.timeScale = 0;
   }
 
-  function addRandomRectangle() {
+  function renderPreview() {
+
     // create a Matter.js engine
     var copyMatter = {};
     copyMatter.engine = Engine.create();
+    copyMatter.engine.world = resurrect.resurrect(resurrect.stringify(myMatter.world));
     copyMatter.world = copyMatter.engine.world;
 
     copyMatter.render = Render.create({
@@ -202,14 +213,42 @@ var myMatter = (function() {
     // run the renderer
     Render.run(copyMatter.render);
 
-    for (var i = 0; i < myMatter.world.bodies.length; i++) {
-      console.log(myMatter.world.bodies[i]);
-      var cloned = Matter.Common.clone(myMatter.world.bodies[i], false);
-      World.add(copyMatter.world, cloned.parent);
+    // add borders
+    var ground = Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
+    ground.render.fillStyle = 'transparent';
+    var wall_left = Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
+    wall_left.render.fillStyle = 'transparent';
+    var wall_right = Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
+    wall_right.render.fillStyle = 'transparent';
+    var ceiling = Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
+    ceiling.render.fillStyle = 'transparent';
+    World.add(copyMatter.world, [
+      ground,
+      wall_left,
+      wall_right,
+      ceiling
+    ]);
+
+    // deactivate Mouse Constraints
+    for (var j in copyMatter.world.constraints) {
+      if (copyMatter.world.constraints[j].label === 'Mouse Constraint') {
+        copyMatter.world.constraints[j].length = 0;
+        copyMatter.world.constraints[j].stiffness = 0;
+        copyMatter.world.constraints[j].render.visible = false;
+      }
     }
 
-    var ball = Bodies.circle(560, 100, 50, {density: 0.005});
-    World.add(copyMatter.world, ball);
+    // activate bodies
+    var allBodies = Matter.Composite.allBodies(copyMatter.world);
+    for (var i in allBodies) {
+      if (allBodies[i].isMoveable) {
+        allBodies[i].isStatic = false;
+      }
+    }
+
+    setTimeout(function() {
+      Matter.World.clear(copyMatter.world, false);
+    }, 2000)
   }
 
   function addRectangle(x, y, width, height, options) {
@@ -300,9 +339,11 @@ var myMatter = (function() {
   }
 
   function mouseMoveEvent(event) {
+    var currentTimestamp = Date.now();
+
     if (myMatter.state.isHandling && !myMatter.state.isDragging) {
       // only move when not a click
-      var currentTimestamp = Date.now();
+
       if (currentTimestamp - startTimestamp > CLICK_DELAY_MS) {
         myMatter.state.isDragging = true;
         draggedBody.isStatic = false;
@@ -311,6 +352,24 @@ var myMatter = (function() {
 
     if (myMatter.state.isDragging) {
       myMatter.mouse.mousemove(event);
+    }
+
+    if (myMatter.state.isDragging && myMatter.state.enablePreview) {
+      // check when to show preview animation
+      var currentPoint = {
+        X: event.layerX,
+        Y: event.layerY
+      };
+      if (lastDragPoint) {
+        var dist = Math.pow(lastDragPoint.X - currentPoint.X, 2) + Math.pow(lastDragPoint.Y - currentPoint.Y, 2);
+        var timeDist = currentTimestamp - lastAnimationTimestamp;
+        if (dist < NO_MOVE_DIST && timeDist > NO_ANIMATION_MS) {
+          lastAnimationTimestamp = currentTimestamp;
+
+          renderPreview();
+        }
+      }
+      lastDragPoint = currentPoint;
     }
   }
 
