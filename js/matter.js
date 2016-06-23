@@ -85,9 +85,10 @@ var myMatter = (function() {
     });
 
     // setup
-    setTimeout(function() {
-        myLevels.catapult()
-    }, 300);
+    createDefaultBodies();
+    // setTimeout(function() {
+    //     myLevels.catapult()
+    // }, 300);
     createVirtualMouse();
     setRenderOptions();
 
