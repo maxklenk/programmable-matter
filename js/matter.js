@@ -73,6 +73,7 @@ var myMatter = (function() {
     myMatter.world = myMatter.engine.world;
 
     myMatter.render = Render.create({
+      element: document.getElementById('canvas-container'),
       canvas: document.getElementById('mainAnimation'),
       engine: myMatter.engine
     });
@@ -190,6 +191,7 @@ var myMatter = (function() {
     copyMatter.world = copyMatter.engine.world;
 
     copyMatter.render = Render.create({
+      element: document.getElementById('canvas-container'),
       canvas: document.getElementById('previewAnimation'),
       engine: copyMatter.engine
     });
@@ -199,6 +201,12 @@ var myMatter = (function() {
 
     // run the renderer
     Render.run(copyMatter.render);
+
+    for (var i = 0; i < myMatter.world.bodies.length; i++) {
+      console.log(myMatter.world.bodies[i]);
+      var cloned = Matter.Common.clone(myMatter.world.bodies[i], false);
+      World.add(copyMatter.world, cloned.parent);
+    }
 
     var ball = Bodies.circle(560, 100, 50, {density: 0.005});
     World.add(copyMatter.world, ball);

@@ -56,6 +56,13 @@ body {
   background: transparent !important;
 }
 
+#myCanvas {
+  z-index: 2;
+}
+#mainAnimation {
+  z-index: 1;
+}
+
 .element-menu {
   display: none;
   position: absolute;
