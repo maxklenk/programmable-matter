@@ -244,6 +244,7 @@ var myMatter = (function() {
     if (myMatter.state.playMode) {
         myMatter.clearVectors();
         arrows = [];
+        resultingArrows = [];
     }
 
     // This should do the trick, but it doesn't work
