@@ -56,6 +56,8 @@ var myMatter = (function() {
   var draggedBody = null;
   var startPoint = null;
   var startTimestamp = null;
+  var arrows = []; // each element: {from: point, to: point, colorString: colorString}
+  var resultingArrows = []; // each element: {bodyId: id, from: point, to: point}
 
   // Matter.js module aliases
   var Engine = Matter.Engine,
@@ -82,9 +84,7 @@ var myMatter = (function() {
     });
 
     // setup
-    setTimeout(function() {
-        myLevels.catapult()
-    }, 1000);
+    createDefaultBodies();
     createVirtualMouse();
     setRenderOptions();
 
@@ -97,10 +97,20 @@ var myMatter = (function() {
 
   }
 
-  function drawArrow(from, to) {
+  function drawArrows() {
+      var context = myMatter.vectorCanvas.getContext("2d");
+      clearVectors();
+      for (var i = 0; i < arrows.length; i++) {
+          drawArrow(arrows[i].from, arrows[i].to, arrows[i].colorString, context);
+      }
+      for (var i = 0; i < resultingArrows.length; i++) {
+          drawArrow(resultingArrows[i].from, resultingArrows[i].to, resultingArrows[i].colorString, context);
+      }
+  }
+
+  function drawArrow(from, to, colorString, context) {
       var headlen = 10;
       var angle = Math.atan2(toy-fromy,tox-fromx);
-      var context = myMatter.vectorCanvas.getContext("2d");
       var fromx = from.x;
       var fromy = from.y;
       var tox = to.x;
@@ -113,7 +123,7 @@ var myMatter = (function() {
       context.beginPath();
       context.moveTo(fromx, fromy);
       context.lineTo(tox, toy);
-      context.strokeStyle = "#cc0000";
+      context.strokeStyle = colorString;
       context.lineWidth = 2;
       context.stroke();
 
@@ -130,16 +140,59 @@ var myMatter = (function() {
       context.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
 
       //draws the paths created above
-      context.strokeStyle = "#cc0000";
+      context.strokeStyle = colorString;
       context.lineWidth = 2;
       context.stroke();
-      context.fillStyle = "#cc0000";
+      context.fillStyle = colorString;
       context.fill();
   }
 
   function clearVectors() {
       var context = myMatter.vectorCanvas.getContext("2d");
       context.clearRect(0, 0, myMatter.vectorCanvas.width, myMatter.vectorCanvas.height);
+  }
+
+  function createDefaultBodies() {
+    // create bodies
+    var stack = Composites.stack(250, 255, 1, 6, 0, 0, function(x, y) {
+      var body = Bodies.rectangle(x, y, 30, 30);
+      body.isMoveable = true;
+      return body;
+    });
+
+    var catapult = Bodies.rectangle(400, 520, 320, 20, {});
+    catapult.isMoveable = true;
+    var catapult_stand_left = Constraint.create({bodyA: catapult, pointB: {x: 390, y: 580}});
+    var catapult_stand_right = Constraint.create({bodyA: catapult, pointB: {x: 410, y: 580}});
+    var holder = Bodies.rectangle(250, 555, 20, 50, {isStatic: true});
+
+    var ball = Bodies.circle(560, 100, 50, {density: 0.005});
+    ball.isMoveable = true;
+
+    var ground = Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
+    ground.render.fillStyle = '#222222';
+    var wall_left = Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
+    wall_left.render.fillStyle = '#222222';
+    var wall_right = Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
+    wall_right.render.fillStyle = '#222222';
+    var ceiling = Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
+    ceiling.render.fillStyle = '#222222';
+
+    var elements = [
+      stack,
+      catapult,
+      catapult_stand_left,
+      catapult_stand_right,
+      holder,
+      ball,
+      ground,
+      wall_left,
+      wall_right,
+      ceiling
+    ];
+
+    // add all of the bodies to the world
+    World.add(myMatter.world, elements);
   }
 
   // add mouse control
@@ -190,6 +243,7 @@ var myMatter = (function() {
     }
     if (myMatter.state.playMode) {
         myMatter.clearVectors();
+        arrows = [];
     }
 
     // This should do the trick, but it doesn't work
@@ -247,6 +301,11 @@ var myMatter = (function() {
                 body.nextForce.y + force.y
             )
             body.nextForce = resultingForce;
+            var to = {
+                x: position.x + resultingForce.x * forceDivider,
+                y: position.y + resultingForce.y * forceDivider
+            };
+            addResultingArrow(position, to, body.id);
         } else {
             body.nextForce = force;
             console.log(body);
@@ -255,8 +314,30 @@ var myMatter = (function() {
             x: position.x + arrow.direction.x,
             y: position.y + arrow.direction.y
         }
-        myMatter.drawArrow(position, endPosition)
+        arrows.push({
+            from: position,
+            to: endPosition,
+            colorString: "#cc0000"
+        });
+        drawArrows();
+
     }
+  }
+
+  function addResultingArrow(from, to, id) {
+      for (var i = 0; i < resultingArrows.length; i++) {
+          if (resultingArrows[i].id === id) {
+              resultingArrows.splice(i, 1);
+              break;
+          }
+      }
+
+      resultingArrows.push({
+          from: from,
+          to: to,
+          colorString: "#00cc00",
+          id: id
+      })
   }
 
   function addLine(line) {
@@ -420,7 +501,6 @@ var myMatter = (function() {
   function setScaleOfBody(body, scaleX, scaleY) {
     Matter.Body.scale(body, scaleX, scaleY);
   }
-
 
   return myMatter;
 
