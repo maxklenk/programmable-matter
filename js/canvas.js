@@ -90,6 +90,9 @@ var myCanvas = (function() {
     }
 
     function mouseUpEvent(x, y, button) {
+        if (myMatter.state.isHandling) {
+            return;
+        }
         _isDown = false;
 
         _strokes[_strokes.length] = _points.slice(); // add new copy to set
@@ -143,8 +146,6 @@ var myCanvas = (function() {
     }
 
     function activateMultipleBodiesMode(event) {
-        console.log("activate")
-        console.log(event)
         jQuery('.multipleBodiesButton').css({
             'background-color': '#c55'
         });
@@ -152,8 +153,6 @@ var myCanvas = (function() {
     }
 
     function deactivateMultipleBodiesMode(event) {
-        console.log("deactivate")
-        console.log(event)
         jQuery('.multipleBodiesButton').css({
             'background-color': '#5c5'
         });
@@ -187,6 +186,9 @@ var myCanvas = (function() {
     function recognizeBody(strokes) {
         if (strokes.length == 1 && strokes[0].length < 10) {
             return;
+        }
+        if (strokes[0].length === 0) {
+            strokes.shift();
         }
         console.log(strokes);
         var result = _r.Recognize(strokes, false, false, false);
