@@ -21,7 +21,7 @@
 <div class="global-menu">
   <button class="button" onclick="myMatter.togglePlay(); resetMenu();">play/pause</button>
   <button class="button" onclick="myMatter.addRandomRectangle()">add Rectangle</button>
-  <div class="multipleBodiesButton" ontouchstart="activateMultipleBodiesMode(event)" ontouchend="deactivateMultipleBodiesMode()">
+  <div class="multipleBodiesButton" ontouchstart="myCanvas.activateMultipleBodiesMode(event)" ontouchend="myCanvas.deactivateMultipleBodiesMode()">
       Hold to draw multiple bodies
   </div>
 
@@ -63,8 +63,8 @@
   </canvas>
   <canvas id="myCanvas"
       style="z-index: 1;"
-      onmousedown="resetMenu(); myMatter.mouseDownEvent(event); myCanvas.mouseDownEvent(event.clientX, event.clientY, event.button);"
-      onmousemove="myMatter.mouseMoveEvent(event); myCanvas.mouseMoveEvent(event.clientX, event.clientY, event.button);"
+      onmousedown="resetMenu(); myMatter.mouseDownEvent(event); myCanvas.mouseDownEvent(event.clientX, event.clientY, event.button, event);"
+      onmousemove="myMatter.mouseMoveEvent(event); myCanvas.mouseMoveEvent(event.clientX, event.clientY, event.button, event);"
       onmouseup="myMatter.mouseUpEvent(event); myCanvas.mouseUpEvent(event.clientX, event.clientY, event.button);"
       oncontextmenu="return false;">
     <span style="background-color:#ffff88;">The &lt;canvas&gt; element is not supported by this browser.</span>
