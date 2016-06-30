@@ -69,28 +69,18 @@ var myMatter = (function() {
   var lastDragPoint = null;
   var lastAnimationTimestamp = 0;
 
-  // Matter.js module aliases
-  var Engine = Matter.Engine,
-    Render = Matter.Render,
-    World = Matter.World,
-    Bodies = Matter.Bodies,
-    Composites = Matter.Composites,
-    Constraint = Matter.Constraint,
-    MouseConstraint = Matter.MouseConstraint,
-    Mouse = Matter.Mouse,
-    Body = Matter.Body;
   var resurrect = new Resurrect({ cleanup: true, revive: false });
 
   ////////////
 
   function init() {
     // create a Matter.js engine
-    myMatter.engine = Engine.create();
+    myMatter.engine = Matter.Engine.create();
     myMatter.world = myMatter.engine.world;
 
     // bind to DOM
     myMatter.vectorCanvas = document.getElementById('vectorCanvas');
-    myMatter.render = Render.create({
+    myMatter.render = Matter.Render.create({
       element: document.getElementById('canvas-container'),
       canvas: document.getElementById('mainAnimation'),
       engine: myMatter.engine
@@ -102,10 +92,10 @@ var myMatter = (function() {
     setRenderOptions();
 
     // run the engine
-    Engine.run(myMatter.engine);
+    Matter.Engine.run(myMatter.engine);
 
     // run the renderer
-    Render.run(myMatter.render);
+    Matter.Render.run(myMatter.render);
   }
 
   function drawArrows() {
@@ -165,13 +155,13 @@ var myMatter = (function() {
 
   // add mouse control
   function createVirtualMouse(matter) {
-    matter.mouse = Mouse.create(matter.render.canvas);
-    matter.mouseConstraint = MouseConstraint.create(matter.engine, {
+    matter.mouse = Matter.Mouse.create(matter.render.canvas);
+    matter.mouseConstraint = Matter.MouseConstraint.create(matter.engine, {
       element: matter.render.canvas,
       mouse: matter.mouse
     });
     matter.mouseConstraint.constraint.stiffness = 0.8; // keep body on cursor
-    World.add(matter.world, matter.mouseConstraint);
+    Matter.World.add(matter.world, matter.mouseConstraint);
   }
 
   function setRenderOptions() {
@@ -235,21 +225,21 @@ var myMatter = (function() {
     });
 
     // run the engine
-    Engine.run(copyMatter.engine);
+    Matter.Engine.run(copyMatter.engine);
 
     // run the renderer
-    Render.run(copyMatter.render);
+    Matter.Render.run(copyMatter.render);
 
     // add borders
-    var ground = Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
+    var ground = Matter.Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
     ground.render.fillStyle = 'transparent';
-    var wall_left = Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
+    var wall_left = Matter.Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
     wall_left.render.fillStyle = 'transparent';
-    var wall_right = Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
+    var wall_right = Matter.Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
     wall_right.render.fillStyle = 'transparent';
-    var ceiling = Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
+    var ceiling = Matter.Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
     ceiling.render.fillStyle = 'transparent';
-    World.add(copyMatter.world, [
+    Matter.World.add(copyMatter.world, [
       ground,
       wall_left,
       wall_right,
@@ -289,11 +279,11 @@ var myMatter = (function() {
 
   function addRectangle(x, y, width, height, options) {
     var newRectangle = getRectangle(x, y, width, height, options);
-    World.add(myMatter.world, newRectangle);
+    Matter.World.add(myMatter.world, newRectangle);
   }
 
   function getRectangle(x, y, width, height, options) {
-    var newRectangle = Bodies.rectangle(x, y, width, height, options);
+    var newRectangle = Matter.Bodies.rectangle(x, y, width, height, options);
     newRectangle.isMoveable = true;
     if (!myMatter.state.playMode) {
       newRectangle.isStatic = true;
@@ -303,11 +293,11 @@ var myMatter = (function() {
 
   function addCircle(x, y, radius, options) {
     var newCircle = getCircle(x, y, radius, options);
-    World.add(myMatter.world, newCircle);
+    Matter.World.add(myMatter.world, newCircle);
   }
 
   function getCircle(x, y, radius, options) {
-      var newCircle = Bodies.circle(x, y, radius, options);
+      var newCircle = Matter.Bodies.circle(x, y, radius, options);
       newCircle.isMoveable = true;
       if (!myMatter.state.playMode) {
         newCircle.isStatic = true;
@@ -376,22 +366,22 @@ var myMatter = (function() {
       x: line.start.x + line.direction.x ,
       y: line.start.y + line.direction.y
     };
-    var newArrow = Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
-    World.add(myMatter.world, newArrow);
+    var newArrow = Matter.Constraint.create({bodyA: myMatter.selectedBody, pointB: endPoint});
+    Matter.World.add(myMatter.world, newArrow);
   }
 
   function addCompound(bodies) {
     if (bodies.length === 0) {
         return;
     }
-    var compound = Body.create({
+    var compound = Matter.Body.create({
       parts: bodies
     });
     compound.isMoveable = true;
     if (!myMatter.state.playMode) {
       compound.isStatic = true;
     }
-    World.add(myMatter.world, [compound]);
+    Matter.World.add(myMatter.world, [compound]);
   }
 
   // pass events to virtual mouse
