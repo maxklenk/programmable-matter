@@ -15,7 +15,7 @@ var myLevels = (function() {
   function clearWorld() {
     Matter.World.clear(myMatter.world, false);
     Matter.World.add(myMatter.world, myMatter.mouseConstraint);
-    myLevels.addFourWalls();
+    myLevels.addFourWalls(myMatter);
   }
 
   function catapult() {
@@ -49,35 +49,35 @@ var myLevels = (function() {
     Matter.World.add(myMatter.world, elements);
   }
 
-  function addFourWalls() {
-    myLevels.addLeftWall();
-    myLevels.addRightWall();
-    myLevels.addGround();
-    myLevels.addCeiling();
+  function addFourWalls(matter) {
+    myLevels.addLeftWall(matter);
+    myLevels.addRightWall(matter);
+    myLevels.addGround(matter);
+    myLevels.addCeiling(matter);
   }
 
-  function addLeftWall() {
+  function addLeftWall(matter) {
     var wall_left = Matter.Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
     wall_left.render.fillStyle = '#222222';
-    Matter.World.add(myMatter.world, wall_left);
+    Matter.World.add(matter.world, wall_left);
   }
 
-  function addRightWall() {
+  function addRightWall(matter) {
     var wall_right = Matter.Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
     wall_right.render.fillStyle = '#222222';
-    Matter.World.add(myMatter.world, wall_right);
+    Matter.World.add(matter.world, wall_right);
   }
 
-  function addGround() {
+  function addGround(matter) {
     var ground = Matter.Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
     ground.render.fillStyle = '#222222';
-    Matter.World.add(myMatter.world, ground);
+    Matter.World.add(matter.world, ground);
   }
 
-  function addCeiling() {
+  function addCeiling(matter) {
     var ceiling = Matter.Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
     ceiling.render.fillStyle = '#222222';
-    Matter.World.add(myMatter.world, ceiling);
+    Matter.World.add(matter.world, ceiling);
   }
 
 
