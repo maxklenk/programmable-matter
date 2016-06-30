@@ -88,6 +88,8 @@ var myMatter = (function() {
     myMatter.engine = Engine.create();
     myMatter.world = myMatter.engine.world;
 
+    // bind to DOM
+    myMatter.vectorCanvas = document.getElementById('vectorCanvas');
     myMatter.render = Render.create({
       element: document.getElementById('canvas-container'),
       canvas: document.getElementById('mainAnimation'),
@@ -95,18 +97,15 @@ var myMatter = (function() {
     });
 
     // setup
-    createDefaultBodies();
     createVirtualMouse(myMatter);
-
+    myLevels.catapult();
     setRenderOptions();
 
-    myMatter.vectorCanvas = document.getElementById('vectorCanvas');
     // run the engine
     Engine.run(myMatter.engine);
 
     // run the renderer
     Render.run(myMatter.render);
-
   }
 
   function drawArrows() {
@@ -162,49 +161,6 @@ var myMatter = (function() {
   function clearVectors() {
       var context = myMatter.vectorCanvas.getContext("2d");
       context.clearRect(0, 0, myMatter.vectorCanvas.width, myMatter.vectorCanvas.height);
-  }
-
-  function createDefaultBodies() {
-    // create bodies
-    var stack = Composites.stack(250, 255, 1, 6, 0, 0, function(x, y) {
-      var body = Bodies.rectangle(x, y, 30, 30);
-      body.isMoveable = true;
-      return body;
-    });
-
-    var catapult = Bodies.rectangle(400, 520, 320, 20, {});
-    catapult.isMoveable = true;
-    var catapult_stand_left = Constraint.create({bodyA: catapult, pointB: {x: 390, y: 580}});
-    var catapult_stand_right = Constraint.create({bodyA: catapult, pointB: {x: 410, y: 580}});
-    var holder = Bodies.rectangle(250, 555, 20, 50, {isStatic: true});
-
-    var ball = Bodies.circle(560, 100, 50, {density: 0.005});
-    ball.isMoveable = true;
-
-    var ground = Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
-    ground.render.fillStyle = 'transparent';
-    var wall_left = Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
-    wall_left.render.fillStyle = 'transparent';
-    var wall_right = Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
-    wall_right.render.fillStyle = 'transparent';
-    var ceiling = Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
-    ceiling.render.fillStyle = 'transparent';
-
-    var elements = [
-      stack,
-      catapult,
-      catapult_stand_left,
-      catapult_stand_right,
-      holder,
-      ball,
-      ground,
-      wall_left,
-      wall_right,
-      ceiling
-    ];
-
-    // add all of the bodies to the world
-    World.add(myMatter.world, elements);
   }
 
   // add mouse control
