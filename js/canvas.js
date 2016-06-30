@@ -55,11 +55,11 @@ var myCanvas = (function() {
 
 
     function mouseDownEvent(x, y, button) {
+        event.stopPropagation();
+        event.preventDefault();
         if (myMatter.state.isHandling) {
             return;
         }
-        event.stopPropagation();
-        event.preventDefault();
         _isDown = true;
         myMatter.state.isDrawing = true;
 
@@ -153,6 +153,7 @@ var myCanvas = (function() {
     }
 
     function deactivateMultipleBodiesMode(event) {
+        console.log("")
         jQuery('.multipleBodiesButton').css({
             'background-color': '#5c5'
         });

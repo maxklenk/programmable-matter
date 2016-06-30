@@ -71,6 +71,17 @@ var myMatter = (function() {
   var lastDragPoint = null;
   var lastAnimationTimestamp = 0;
 
+  // Matter.js module aliases
+  var Engine = Matter.Engine,
+    Render = Matter.Render,
+    World = Matter.World,
+    Bodies = Matter.Bodies,
+    Composites = Matter.Composites,
+    Constraint = Matter.Constraint,
+    MouseConstraint = Matter.MouseConstraint,
+    Mouse = Matter.Mouse,
+    Body = Matter.Body,
+    Events = Matter.Events;
   var resurrect = new Resurrect({ cleanup: true, revive: false });
 
   ////////////
@@ -88,9 +99,17 @@ var myMatter = (function() {
       engine: myMatter.engine
     });
 
+
     // setup
     createVirtualMouse(myMatter);
     myLevels.catapult();
+
+    Events.on(myMatter.mouseConstraint, "mousemove", function(event){
+        var body = bodyOnPoint(event.mouse.position)
+        console.log("sdfds");
+        updateArrowsForBody(body)
+    });
+
     setRenderOptions();
 
     // run the engine
@@ -104,20 +123,20 @@ var myMatter = (function() {
       var context = myMatter.vectorCanvas.getContext("2d");
       clearVectors();
       for (var i = 0; i < arrows.length; i++) {
-          drawArrow(arrows[i].from, arrows[i].to, arrows[i].colorString, context);
+          drawArrow(arrows[i].from, arrows[i].direction, arrows[i].colorString, context);
       }
       for (var i = 0; i < resultingArrows.length; i++) {
-          drawArrow(resultingArrows[i].from, resultingArrows[i].to, resultingArrows[i].colorString, context);
+          drawArrow(resultingArrows[i].from, resultingArrows[i].direction, resultingArrows[i].colorString, context);
       }
   }
 
-  function drawArrow(from, to, colorString, context) {
+  function drawArrow(from, direction, colorString, context) {
+      var tox = from.x + direction.x;
+      var toy = from.y + direction.y;
       var headlen = 10;
       var angle = Math.atan2(toy-fromy,tox-fromx);
       var fromx = from.x;
       var fromy = from.y;
-      var tox = to.x;
-      var toy = to.y;
       var headlen = 15;
 
       var angle = Math.atan2(toy-fromy,tox-fromx);
@@ -308,22 +327,18 @@ var myMatter = (function() {
                 body.nextForce.y + force.y
             )
             body.nextForce = resultingForce;
-            var to = {
-                x: position.x + resultingForce.x * forceDivider,
-                y: position.y + resultingForce.y * forceDivider
+            var direction = {
+                x: resultingForce.x * forceDivider,
+                y: resultingForce.y * forceDivider
             };
-            addResultingArrow(position, to, body.id);
+            addResultingArrow(position, direction, body.id);
         } else {
             body.nextForce = force;
-            console.log(body);
-        }
-        var endPosition = {
-            x: position.x + arrow.direction.x,
-            y: position.y + arrow.direction.y
         }
         arrows.push({
+            id: body.id,
             from: position,
-            to: endPosition,
+            direction: arrow.direction,
             colorString: "#cc0000"
         });
         drawArrows();
@@ -331,7 +346,7 @@ var myMatter = (function() {
     }
   }
 
-  function addResultingArrow(from, to, id) {
+  function addResultingArrow(from, direction, id) {
       for (var i = 0; i < resultingArrows.length; i++) {
           if (resultingArrows[i].id === id) {
               resultingArrows.splice(i, 1);
@@ -341,7 +356,7 @@ var myMatter = (function() {
 
       resultingArrows.push({
           from: from,
-          to: to,
+          direction: direction,
           colorString: "#00cc00",
           id: id
       })
@@ -531,6 +546,10 @@ var myMatter = (function() {
 
   function setDensityOfBody(body, density) {
     Matter.Body.setDensity(body, density);
+  }
+
+  function updateArrowsForBody(body) {
+      drawArrows();
   }
 
   return myMatter;
