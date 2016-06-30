@@ -26,9 +26,9 @@ function showMenu(point, body) {
     bodyPropertiesForBodyId[body.id].isStatic = false;
     bodyPropertiesForBodyId[body.id].density = body.density;
   }
-  var canvasContainer = jQuery('#myCanvas');
-  var top = point.y + canvasContainer.offset().top - (menu.height())/2;
-  var left = point.x + 20 + canvasContainer.offset().left;
+
+  var top = point.y - (menu.height())/2;
+  var left = point.x + 40;
 
   menu.css({"display": "block", "top": top, "left": left });
 }
