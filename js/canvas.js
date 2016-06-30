@@ -5,6 +5,8 @@ var myCanvas = (function() {
         init: init,
         checkForModeActivation: checkForModeActivation,
         checkForModeDeactivation: checkForModeDeactivation,
+        activateMultipleBodiesMode: activateMultipleBodiesMode,
+        deactivateMultipleBodiesMode: deactivateMultipleBodiesMode,
         mouseDownEvent: mouseDownEvent,
         mouseUpEvent: mouseUpEvent,
         mouseMoveEvent: mouseMoveEvent
@@ -56,7 +58,8 @@ var myCanvas = (function() {
         if (myMatter.state.isHandling) {
             return;
         }
-
+        event.stopPropagation();
+        event.preventDefault();
         _isDown = true;
         myMatter.state.isDrawing = true;
 
@@ -72,10 +75,12 @@ var myCanvas = (function() {
         _g.fillRect(x - 4, y - 3, 9, 9);
     }
 
-    function mouseMoveEvent(x, y, button) {
+    function mouseMoveEvent(x, y, button, event) {
         if (myMatter.state.isHandling) {
             return;
         }
+        event.stopPropagation();
+        event.preventDefault();
         if (myMatter.state.isDrawing && _isDown) {
             x -= _rc.x;
             y -= _rc.y - getScrollY();
@@ -138,6 +143,8 @@ var myCanvas = (function() {
     }
 
     function activateMultipleBodiesMode(event) {
+        console.log("activate")
+        console.log(event)
         jQuery('.multipleBodiesButton').css({
             'background-color': '#c55'
         });
@@ -145,6 +152,8 @@ var myCanvas = (function() {
     }
 
     function deactivateMultipleBodiesMode(event) {
+        console.log("deactivate")
+        console.log(event)
         jQuery('.multipleBodiesButton').css({
             'background-color': '#5c5'
         });
