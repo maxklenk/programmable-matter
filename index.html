@@ -61,7 +61,6 @@
 <div class="drawable" id="canvas-container">
 
   <!-- draw -->
-  <canvas id="vectorCanvas" width="800" height="600"></canvas>
   <canvas id="myCanvas"
       onmousedown="resetMenu(); myMatter.mouseDownEvent(event); myCanvas.mouseDownEvent(event.clientX, event.clientY, event.button, event);"
       onmousemove="myMatter.mouseMoveEvent(event); myCanvas.mouseMoveEvent(event.clientX, event.clientY, event.button, event);"
@@ -71,6 +70,7 @@
   </canvas>
 
   <!-- matter.js -->
+  <canvas id="vectorCanvas"></canvas>
   <canvas id="previewAnimation"></canvas>
   <canvas id="mainAnimation"></canvas>
 

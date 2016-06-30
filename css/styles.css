@@ -54,13 +54,17 @@ body {
   top: 0;
   left: 0;
   background: transparent !important;
+  width: 800px;
+  height: 600px;
+  border: 2px solid #6E6E6E;
+}
+
+
+#myCanvas {
+  z-index: 3;
 }
 
 #vectorCanvas {
-  z-index: 0;
-}
-
-#myCanvas {
   z-index: 2;
 }
 #mainAnimation {

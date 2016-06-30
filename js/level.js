@@ -27,11 +27,11 @@ var myLevels = (function() {
       return body;
     });
 
-    var catapult = Matter.Bodies.rectangle(400, 520, 320, 20, {});
+    var catapult = Matter.Bodies.rectangle(400, 540, 320, 20, {});
     catapult.isMoveable = true;
-    var catapult_stand_left = Matter.Constraint.create({bodyA: catapult, pointB: {x: 390, y: 580}});
-    var catapult_stand_right = Matter.Constraint.create({bodyA: catapult, pointB: {x: 410, y: 580}});
-    var holder = Matter.Bodies.rectangle(250, 555, 20, 50, {isStatic: true});
+    var catapult_stand_left = Matter.Constraint.create({bodyA: catapult, pointB: {x: 390, y: 600}});
+    var catapult_stand_right = Matter.Constraint.create({bodyA: catapult, pointB: {x: 410, y: 600}});
+    var holder = Matter.Bodies.rectangle(250, 580, 20, 60, {isStatic: true});
 
     var ball = Matter.Bodies.circle(560, 100, 50, {density: 0.005});
     ball.isMoveable = true;
@@ -57,29 +57,24 @@ var myLevels = (function() {
   }
 
   function addLeftWall(matter) {
-    var wall_left = Matter.Bodies.rectangle(0, 0, 100, 1260, {isStatic: true});
-    wall_left.render.fillStyle = '#222222';
+    var wall_left = Matter.Bodies.rectangle(-51, 0, 100, 1260, {isStatic: true});
     Matter.World.add(matter.world, wall_left);
   }
 
   function addRightWall(matter) {
-    var wall_right = Matter.Bodies.rectangle(800, 0, 100, 1260, {isStatic: true});
-    wall_right.render.fillStyle = '#222222';
+    var wall_right = Matter.Bodies.rectangle(851, 0, 100, 1260, {isStatic: true});
     Matter.World.add(matter.world, wall_right);
   }
 
   function addGround(matter) {
-    var ground = Matter.Bodies.rectangle(400, 610, 810, 60.5, {isStatic: true});
-    ground.render.fillStyle = '#222222';
+    var ground = Matter.Bodies.rectangle(400, 651, 900, 100, {isStatic: true});
     Matter.World.add(matter.world, ground);
   }
 
   function addCeiling(matter) {
-    var ceiling = Matter.Bodies.rectangle(400, 0, 810, 60.5, {isStatic: true});
-    ceiling.render.fillStyle = '#222222';
+    var ceiling = Matter.Bodies.rectangle(400, -51, 810, 100, {isStatic: true});
     Matter.World.add(matter.world, ceiling);
   }
-
 
   return myLevels;
 
