@@ -3,6 +3,8 @@
 var myMatter = (function() {
 
   var myMatter = {
+    init: init,
+
     // virtual mouse
     mouseDownEvent: mouseDownEvent,
     mouseMoveEvent: mouseMoveEvent,
@@ -79,8 +81,6 @@ var myMatter = (function() {
     Body = Matter.Body;
   var resurrect = new Resurrect({ cleanup: true, revive: false });
 
-  init();
-
   ////////////
 
   function init() {
@@ -98,9 +98,6 @@ var myMatter = (function() {
     createDefaultBodies();
     createVirtualMouse(myMatter);
 
-    // setTimeout(function() {
-    //     myLevels.catapult()
-    // }, 300);
     setRenderOptions();
 
     myMatter.vectorCanvas = document.getElementById('vectorCanvas');
