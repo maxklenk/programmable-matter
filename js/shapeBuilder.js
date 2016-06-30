@@ -65,10 +65,8 @@ function ShapeBuilder() {
     if (strokes.length != 2) {
       return; // maybe later: get two longest strokes...
     }
-    var deviation1 = getDeviation(strokes[0]);
-    var deviation2 = getDeviation(strokes[1]);
-    var directionPartIndex = deviation1 < deviation2 ? 0 : 1;
-    var arrowPartIndex = deviation1 < deviation2 ? 1 : 0;
+    var directionPartIndex = 0;
+    var arrowPartIndex = 1;
 
     var centerOfArrowPart = Math.floor(strokes[arrowPartIndex].length / 2);
     var distanceToArrowPart1 = Math.sqrt( Math.pow(strokes[directionPartIndex][0].x - strokes[arrowPartIndex][centerOfArrowPart].x, 2) + Math.pow(strokes[directionPartIndex][0].y - strokes[arrowPartIndex][centerOfArrowPart].y, 2));
@@ -78,6 +76,7 @@ function ShapeBuilder() {
 
     var direction = new Point(end.x - start.x, end.y - start.y);
     var magnitude = Math.sqrt(Math.pow(direction.x, 2), Math.pow(direction.y, 2));
+
     return new Arrow(start, direction, magnitude);
   }
 
@@ -100,20 +99,6 @@ function ShapeBuilder() {
       y: Math.floor((centerOfStroke1.y + centerOfStroke2.y) / 2)
     };
     return point;
-  }
-
-  // Helper methods
-  function getDeviation(stroke) {
-    // parameter for equation y = a*x + b
-    var a = (stroke[stroke.length - 1].y - stroke[0].y) / (stroke[stroke.length - 1].x - stroke[0].x);
-    var b = stroke[0].y - a * stroke[0].x;
-
-    var error = 0;
-    for (var i = 0; i < stroke.length; i++) {
-      var functionY = a * stroke[i].x + b;
-      error += Math.abs(functionY - stroke[i].y);
-    }
-    return error / stroke.length;
   }
 
   function getCenterOfStroke(stroke) {

@@ -26,7 +26,12 @@ var myMatter = (function() {
     setStaticOfBody: setStaticOfBody,
     setAngleOfBody: setAngleOfBody,
     setScaleOfBody: setScaleOfBody,
+    setDensityOfBody: setDensityOfBody,
     removeBodyAt: removeBodyAt,
+
+    // vector canvas
+    clearVectors: clearVectors,
+    drawArrow: drawArrow,
 
     // state
     state: {
@@ -35,7 +40,7 @@ var myMatter = (function() {
       playMode: true,
       multipleBodiesMode: false,
       selectedBody: null,
-      enablePreview: false
+      enablePreview: true
     },
 
     // matter
@@ -53,6 +58,8 @@ var myMatter = (function() {
   var draggedBody = null;
   var startPoint = null;
   var startTimestamp = null;
+  var arrows = []; // each element: {from: point, to: point, colorString: colorString}
+  var resultingArrows = []; // each element: {bodyId: id, from: point, to: point}
 
   // internals: preview animation
   var NO_MOVE_DIST = 2;
@@ -90,16 +97,74 @@ var myMatter = (function() {
     // setup
     createDefaultBodies();
     createVirtualMouse(myMatter);
+
+    // setTimeout(function() {
+    //     myLevels.catapult()
+    // }, 300);
     setRenderOptions();
 
+    myMatter.vectorCanvas = document.getElementById('vectorCanvas');
     // run the engine
     Engine.run(myMatter.engine);
 
     // run the renderer
     Render.run(myMatter.render);
 
-    // play mode
-    togglePlay();
+  }
+
+  function drawArrows() {
+      var context = myMatter.vectorCanvas.getContext("2d");
+      clearVectors();
+      for (var i = 0; i < arrows.length; i++) {
+          drawArrow(arrows[i].from, arrows[i].to, arrows[i].colorString, context);
+      }
+      for (var i = 0; i < resultingArrows.length; i++) {
+          drawArrow(resultingArrows[i].from, resultingArrows[i].to, resultingArrows[i].colorString, context);
+      }
+  }
+
+  function drawArrow(from, to, colorString, context) {
+      var headlen = 10;
+      var angle = Math.atan2(toy-fromy,tox-fromx);
+      var fromx = from.x;
+      var fromy = from.y;
+      var tox = to.x;
+      var toy = to.y;
+      var headlen = 15;
+
+      var angle = Math.atan2(toy-fromy,tox-fromx);
+
+      //starting path of the arrow from the start square to the end square and drawing the stroke
+      context.beginPath();
+      context.moveTo(fromx, fromy);
+      context.lineTo(tox, toy);
+      context.strokeStyle = colorString;
+      context.lineWidth = 2;
+      context.stroke();
+
+      //starting a new path from the head of the arrow to one of the sides of the point
+      context.beginPath();
+      context.moveTo(tox, toy);
+      context.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+
+      //path from the side point of the arrow, to the other side point
+      context.lineTo(tox-headlen*Math.cos(angle+Math.PI/7),toy-headlen*Math.sin(angle+Math.PI/7));
+
+      //path from the side point back to the tip of the arrow, and then again to the opposite side point
+      context.lineTo(tox, toy);
+      context.lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+
+      //draws the paths created above
+      context.strokeStyle = colorString;
+      context.lineWidth = 2;
+      context.stroke();
+      context.fillStyle = colorString;
+      context.fill();
+  }
+
+  function clearVectors() {
+      var context = myMatter.vectorCanvas.getContext("2d");
+      context.clearRect(0, 0, myMatter.vectorCanvas.width, myMatter.vectorCanvas.height);
   }
 
   function createDefaultBodies() {
@@ -185,7 +250,16 @@ var myMatter = (function() {
     for (var i in allBodies) {
       if (allBodies[i].isMoveable) {
         allBodies[i].isStatic = !myMatter.state.playMode;
+        if (myMatter.state.playMode && allBodies[i].nextForce) {
+            Matter.Body.applyForce(allBodies[i], allBodies[i].position, allBodies[i].nextForce);
+            allBodies[i].nextForce = undefined;
+        }
       }
+    }
+    if (myMatter.state.playMode) {
+        myMatter.clearVectors();
+        arrows = [];
+        resultingArrows = [];
     }
 
     // This should do the trick, but it doesn't work
@@ -282,12 +356,57 @@ var myMatter = (function() {
   function addVector(arrow) {
     var body = myMatter.selectedBody;
     var position = body.position;
-    var forceDivider = (40 / body.mass) * 30;
+    var forceDivider = (40 / body.mass) * 50;
     var force = Matter.Vector.create(
         arrow.direction.x / forceDivider,
         arrow.direction.y / forceDivider
     );
-    Matter.Body.applyForce(body, position, force);
+    if (myMatter.state.playMode) {
+        Matter.Body.applyForce(body, position, force);
+    } else {
+        if (body.nextForce) {
+            var resultingForce = Matter.Vector.create(
+                body.nextForce.x + force.x,
+                body.nextForce.y + force.y
+            )
+            body.nextForce = resultingForce;
+            var to = {
+                x: position.x + resultingForce.x * forceDivider,
+                y: position.y + resultingForce.y * forceDivider
+            };
+            addResultingArrow(position, to, body.id);
+        } else {
+            body.nextForce = force;
+            console.log(body);
+        }
+        var endPosition = {
+            x: position.x + arrow.direction.x,
+            y: position.y + arrow.direction.y
+        }
+        arrows.push({
+            from: position,
+            to: endPosition,
+            colorString: "#cc0000"
+        });
+        drawArrows();
+
+    }
+  }
+
+  function addResultingArrow(from, to, id) {
+      for (var i = 0; i < resultingArrows.length; i++) {
+          if (resultingArrows[i].id === id) {
+              resultingArrows.splice(i, 1);
+              break;
+          }
+      }
+
+      resultingArrows.push({
+          from: from,
+          to: to,
+          colorString: "#00cc00",
+          id: id
+      })
   }
 
   function addLine(line) {
@@ -470,6 +589,10 @@ var myMatter = (function() {
 
   function setScaleOfBody(body, scaleX, scaleY) {
     Matter.Body.scale(body, scaleX, scaleY);
+  }
+
+  function setDensityOfBody(body, density) {
+    Matter.Body.setDensity(body, density);
   }
 
   return myMatter;

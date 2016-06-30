@@ -11,14 +11,20 @@ function showMenu(point, body) {
   if (bodyPropertiesForBodyId[body.id]) {
     console.log(bodyPropertiesForBodyId[body.id]);
     jQuery('#angle').val(bodyPropertiesForBodyId[body.id].angle * 180/3.14159);
-    jQuery('#size').val(bodyPropertiesForBodyId[body.id].scale * 1000)
+    jQuery('#size').val(bodyPropertiesForBodyId[body.id].scale * 1000);
+    jQuery('#sticky').prop('checked', bodyPropertiesForBodyId[body.id].isStatic);
+    jQuery('#density').val(bodyPropertiesForBodyId[body.id].density * 100000);
   } else {
     jQuery('#angle').val('0');
     jQuery('#size').val('1000');
+    jQuery('#sticky').prop('checked', false);
+    jQuery('#density').val('100');
     bodyPropertiesForBodyId[body.id] = {};
     bodyPropertiesForBodyId[body.id].angle = body.angle;
     bodyPropertiesForBodyId[body.id].startAngle = body.angle;
     bodyPropertiesForBodyId[body.id].scale = 1;
+    bodyPropertiesForBodyId[body.id].isStatic = false;
+    bodyPropertiesForBodyId[body.id].density = body.density;
   }
   var canvasContainer = jQuery('#myCanvas');
   var top = point.y + canvasContainer.offset().top - (menu.height())/2;
@@ -44,8 +50,14 @@ function rotateBody(degrees) {
     myMatter.setAngleOfBody(bodyFromMenu, bodyPropertiesForBodyId[bodyFromMenu.id].angle)
 }
 
+function changeDensityOfBody(density) {
+  bodyPropertiesForBodyId[bodyFromMenu.id].density = density;
+  myMatter.setDensityOfBody(bodyFromMenu, bodyPropertiesForBodyId[bodyFromMenu.id].density)
+}
+
 function setStaticProperty(isStatic) {
-    myMatter.setStaticOfBody(bodyFromMenu, isStatic);
+  bodyPropertiesForBodyId[bodyFromMenu.id].isStatic = isStatic;
+  myMatter.setStaticOfBody(bodyFromMenu, isStatic);
 }
 
 function resetMenu() {

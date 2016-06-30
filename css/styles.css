@@ -56,6 +56,10 @@ body {
   background: transparent !important;
 }
 
+#vectorCanvas {
+  z-index: 0;
+}
+
 #myCanvas {
   z-index: 2;
 }
@@ -66,6 +70,7 @@ body {
 .element-menu {
   display: none;
   position: absolute;
+  z-index: 10;
 }
 
 .element-menu ul {
