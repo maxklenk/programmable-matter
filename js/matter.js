@@ -300,7 +300,16 @@ var myMatter = (function() {
       ceiling
     ]);
 
-    // deactivate Mouse Constraints
+    // apply forces
+    var allCopiedBodies = Matter.Composite.allBodies(copyMatter.world);
+    for (var i in allCopiedBodies) {
+        if (allCopiedBodies[i].nextForce) {
+          Matter.Body.applyForce(allCopiedBodies[i], allCopiedBodies[i].position, allCopiedBodies[i].nextForce);
+          allCopiedBodies[i].nextForce = undefined;
+        }
+    }
+
+    // deactivate previous Mouse Constraints
     for (var j in copyMatter.world.constraints) {
       if (copyMatter.world.constraints[j].label === 'Mouse Constraint') {
         copyMatter.world.constraints[j].length = 0;
