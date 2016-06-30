@@ -482,7 +482,7 @@ var myMatter = (function() {
       if (lastDragPoint) {
         var dist = Math.pow(lastDragPoint.X - currentPoint.X, 2) + Math.pow(lastDragPoint.Y - currentPoint.Y, 2);
         var timeDist = currentTimestamp - lastAnimationTimestamp;
-        if (dist < NO_MOVE_DIST && timeDist > NO_ANIMATION_MS) {
+        if (dist > NO_MOVE_DIST && timeDist > NO_ANIMATION_MS) {
           lastAnimationTimestamp = currentTimestamp;
 
           renderPreview();
