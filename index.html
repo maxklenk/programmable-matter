@@ -65,7 +65,7 @@
   <canvas id="myCanvas"
       onmousedown="resetMenu(); myMatter.mouseDownEvent(event); myCanvas.mouseDownEvent(event.clientX, event.clientY, event.button, event);"
       onmousemove="myMatter.mouseMoveEvent(event); myCanvas.mouseMoveEvent(event.clientX, event.clientY, event.button, event);"
-      onmouseup="myMatter.mouseUpEvent(event); myCanvas.mouseUpEvent(event.clientX, event.clientY, event.button);"
+      onmouseup="myCanvas.mouseUpEvent(event.clientX, event.clientY, event.button); myMatter.mouseUpEvent(event);"
       oncontextmenu="return false;">
     <span style="background-color:#ffff88;">The &lt;canvas&gt; element is not supported by this browser.</span>
   </canvas>
