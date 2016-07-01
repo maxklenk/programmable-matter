@@ -71,17 +71,6 @@ var myMatter = (function() {
   var lastDragPoint = null;
   var lastAnimationTimestamp = 0;
 
-  // Matter.js module aliases
-  var Engine = Matter.Engine,
-    Render = Matter.Render,
-    World = Matter.World,
-    Bodies = Matter.Bodies,
-    Composites = Matter.Composites,
-    Constraint = Matter.Constraint,
-    MouseConstraint = Matter.MouseConstraint,
-    Mouse = Matter.Mouse,
-    Body = Matter.Body,
-    Events = Matter.Events;
   var resurrect = new Resurrect({ cleanup: true, revive: false });
 
   ////////////
@@ -104,10 +93,9 @@ var myMatter = (function() {
     createVirtualMouse(myMatter);
     myLevels.catapult();
 
-    Events.on(myMatter.mouseConstraint, "mousemove", function(event){
-        var body = bodyOnPoint(event.mouse.position)
-        console.log("sdfds");
-        updateArrowsForBody(body)
+    Matter.Events.on(myMatter.mouseConstraint, "mousemove", function(event){
+        var body = bodyOnPoint(event.mouse.position);
+        updateArrowsForBody(body);
     });
 
     setRenderOptions();
@@ -125,20 +113,17 @@ var myMatter = (function() {
       for (var i = 0; i < arrows.length; i++) {
           drawArrow(arrows[i].from, arrows[i].direction, arrows[i].colorString, context);
       }
-      for (var i = 0; i < resultingArrows.length; i++) {
-          drawArrow(resultingArrows[i].from, resultingArrows[i].direction, resultingArrows[i].colorString, context);
+      for (var j = 0; j < resultingArrows.length; j++) {
+          drawArrow(resultingArrows[j].from, resultingArrows[j].direction, resultingArrows[j].colorString, context);
       }
   }
 
   function drawArrow(from, direction, colorString, context) {
       var tox = from.x + direction.x;
       var toy = from.y + direction.y;
-      var headlen = 10;
-      var angle = Math.atan2(toy-fromy,tox-fromx);
       var fromx = from.x;
       var fromy = from.y;
       var headlen = 15;
-
       var angle = Math.atan2(toy-fromy,tox-fromx);
 
       //starting path of the arrow from the start square to the end square and drawing the stroke
@@ -181,7 +166,12 @@ var myMatter = (function() {
       element: matter.render.canvas,
       mouse: matter.mouse
     });
-    matter.mouseConstraint.constraint.stiffness = 0.8; // keep body on cursor
+
+    // keep dragged bodies on cursor
+    matter.mouseConstraint.constraint.stiffness = 1;
+    matter.mouseConstraint.constraint.length = 1;
+    matter.mouseConstraint.constraint.render.visible = false;
+
     Matter.World.add(matter.world, matter.mouseConstraint);
   }
 
@@ -325,7 +315,7 @@ var myMatter = (function() {
             var resultingForce = Matter.Vector.create(
                 body.nextForce.x + force.x,
                 body.nextForce.y + force.y
-            )
+            );
             body.nextForce = resultingForce;
             var direction = {
                 x: resultingForce.x * forceDivider,
@@ -525,7 +515,8 @@ var myMatter = (function() {
     }
 
     // render properties (http://brm.io/matter-js/docs/files/src_body_Body.js.html#l151)
-    var newFillStyle = (!body.isMoveable ? '#eeeeee' : Matter.Common.choose(['#556270', '#4ECDC4', '#C7F464', '#FF6B6B', '#C44D58']));
+    var colors = ['#556270', '#4ECDC4', '#C7F464', '#FF6B6B', '#C44D58'];
+    var newFillStyle = (!body.isMoveable ? '#eeeeee' : Matter.Common.choose(colors));
     var newStrokeStyle = Matter.Common.shadeColor(newFillStyle, -20);
     body.render.fillStyle = newFillStyle;
     body.render.strokeStyle = newStrokeStyle;
@@ -548,8 +539,8 @@ var myMatter = (function() {
     Matter.Body.setDensity(body, density);
   }
 
-  function updateArrowsForBody(body) {
-      drawArrows();
+  function updateArrowsForBody() {
+    drawArrows();
   }
 
   return myMatter;
