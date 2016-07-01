@@ -67,11 +67,71 @@ body {
   background: #ee9d3d;
 }
 
+.level-control {
+  position: absolute;
+  left: 40px;
+  bottom: 180px;
+
+  width: 120px;
+  color: #6E6E6E;
+  text-align: center;
+}
+.level-control .button {
+  border-radius: 50%;
+  height: 80px;
+  width: 80px;
+  font-size: 30px;
+  line-height: 1;
+  outline: none;
+
+  margin: auto;
+  margin-bottom: 10px;
+}
+.level-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 800px;
+  height: 600px;
+  z-index: 10;
+  background: rgba(128, 128, 128, 0.5);
+  border: 2px solid gray;
+}
+.level-overlay.show {
+  display: block;
+}
+.level-option {
+  display: inline-block;
+  width: 200px;
+  height: 180px;
+  border-radius: 6px;
+  background: #222222;
+  margin-left: 10px;
+  margin-top: 10px;
+  color: gray;
+  overflow: hidden;
+}
+.level-preview {
+  width: 200px;
+  height: 150px;
+}
+
+.button--level {
+  border: 2px solid darkgray;
+}
+.button--level:hover {
+  border: 2px solid black;
+}
+.button--level:active {
+  background: gray;
+}
 
 .play-control {
   position: absolute;
   left: 40px;
-  bottom: 200px;
+  bottom: 300px;
 
   width: 120px;
 

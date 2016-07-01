@@ -100,3 +100,17 @@ function toggleButton() {
     $body.addClass('pause').removeClass('play');
   }
 }
+
+var showLevelSelect = false;
+var $level = $('.level-overlay');
+function toggleLevelSelect() {
+  showLevelSelect = !showLevelSelect;
+  if (showLevelSelect) {
+    $level.addClass('show');
+  } else {
+    $level.removeClass('show');
+  }
+  if (myMatter.state.playMode == showLevelSelect) {
+    togglePlay();
+  }
+}

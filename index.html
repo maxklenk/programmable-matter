@@ -54,7 +54,6 @@
 </div>
 
 <div class="drawable" id="canvas-container">
-
   <!-- draw -->
   <canvas id="myCanvas"
       onmousedown="resetMenu(); myMatter.mouseDownEvent(event); myCanvas.mouseDownEvent(event.clientX, event.clientY, event.button, event);"
@@ -101,6 +100,18 @@
       </li>
     </ul>
   </div>
+
+
+  <div class="level-overlay">
+    <div class="level-option" onclick="toggleLevelSelect(); myLevels.catapult()">
+      <img class="level-preview" src="./img/levels/catapult.png">
+      Catapult
+    </div>
+    <div class="level-option" onclick="toggleLevelSelect(); myLevels.clearWorld()">
+      <div class="level-preview"></div>
+      Empty
+    </div>
+  </div>
 </div>
 
 
@@ -116,6 +127,14 @@
   </div>
 </div>
 
+<div class="level-control" onclick="toggleLevelSelect()">
+  <button class="button button--level">
+    <i class="fa fa-th-large"></i>
+  </button>
+  <div>
+    Choose a Level
+  </div>
+</div>
 
 <div class="multi-control" ontouchstart="myCanvas.activateMultipleBodiesMode(event)" ontouchend="myCanvas.deactivateMultipleBodiesMode()">
   <button class="button multipleBodiesButton">

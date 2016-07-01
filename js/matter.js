@@ -88,7 +88,6 @@ var myMatter = (function() {
       engine: myMatter.engine
     });
 
-
     // setup
     createVirtualMouse(myMatter);
     myLevels.catapult();
