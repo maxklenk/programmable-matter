@@ -83,3 +83,20 @@ function toggleList(element) {
 		$(element).addClass('fa-angle-right').removeClass('fa-angle-down');
 	}
 }
+
+
+function togglePlay() {
+  myMatter.togglePlay();
+  resetMenu();
+  toggleButton();
+}
+
+var $body = $(document.body);
+$body.addClass('play').removeClass('pause'); // update once on setup
+function toggleButton() {
+  if (myMatter.state.playMode) {
+    $body.addClass('play').removeClass('pause');
+  } else {
+    $body.addClass('pause').removeClass('play');
+  }
+}

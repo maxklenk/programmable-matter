@@ -169,7 +169,7 @@ var myCanvas = (function() {
                 activateMultipleBodiesMode();
                 break;
             case 32:
-                myMatter.togglePlay();
+                togglePlay();
                 break;
             default:
         }

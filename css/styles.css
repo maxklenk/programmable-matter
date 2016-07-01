@@ -37,6 +37,77 @@ body {
   width: 200px;
 }
 
+.play-control {
+  position: absolute;
+  left: 50%;
+  bottom: 80px;
+
+  width: 120px;
+  margin-left: -60px;
+
+  color: #6E6E6E;
+  text-align: center;
+}
+.play-control .button {
+  display: none;
+
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  font-size: 24px;
+  line-height: 1;
+  outline: none;
+
+  margin: auto;
+  margin-bottom: 10px;
+}
+.button--play {
+  padding-top: 4px;
+  padding-left: 11px;
+
+  color: #2b7911;
+  border: 2px solid #2b7911;
+  background: greenyellow;
+}
+.button--play:hover {
+  color: greenyellow;
+  border: 2px solid greenyellow;
+  background: #2b7911;
+}
+
+.button--pause {
+  padding-top: 3px;
+  padding-left: 6px;
+
+  color: #3672a0;
+  border: 2px solid #3672a0;
+  background: #7cffee;
+}
+.button--pause:hover {
+  color: #7cffee;
+  border: 2px solid #7cffee;
+  background: #3672a0;
+}
+
+/* toggle buttons */
+.pause .button--play {
+  display: block;
+}
+.play .button--pause {
+  display: block;
+}
+
+.pause-background {
+  display: none;
+  color: gray;
+  opacity: 0.3;
+  font-size: 60px;
+  padding-top: 270px;
+}
+.pause .pause-background {
+  display: block;
+}
+
 .headline {
   text-align: center;
   color: #6E6E6E;

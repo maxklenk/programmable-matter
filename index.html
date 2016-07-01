@@ -12,6 +12,7 @@
 
   <!-- styles (custom) -->
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 
 </head>
 
@@ -19,7 +20,7 @@
 <h1 class="headline">programmable matter</h1>
 
 <div class="global-menu">
-  <button class="button" onclick="myMatter.togglePlay(); resetMenu();">play/pause</button>
+  <button class="button" onclick="togglePlay()">play/pause</button>
   <div class="multipleBodiesButton" ontouchstart="myCanvas.activateMultipleBodiesMode(event)" ontouchend="myCanvas.deactivateMultipleBodiesMode()">
       Hold to draw multiple bodies
   </div>
@@ -73,6 +74,9 @@
   <canvas id="vectorCanvas" width="800" height="600"></canvas>
   <canvas id="previewAnimation"></canvas>
   <canvas id="mainAnimation"></canvas>
+  <div class="pause-background">
+    <i class="fa fa-pause"></i>
+  </div>
 
   <div class="element-menu">
     <ul>
@@ -105,6 +109,20 @@
   </div>
 </div>
 
+
+<div class="play-control" onclick="togglePlay()">
+  <button class="button button--play">
+    <i class="fa fa-play"></i>
+  </button>
+  <button class="button button--pause">
+    <i class="fa fa-pause"></i>
+  </button>
+  <div>
+    Toggle with space
+  </div>
+</div>
+
+
 <!-- scripts (vendor) -->
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="bower_components/Matter/build/matter.min.js"></script>
@@ -120,8 +138,8 @@
 <script type="text/javascript" src="js/level.js"></script>
 
 <script type="text/javascript">
-            myMatter.init();
-        </script>
+  myMatter.init();
+</script>
 
 </body>
 </html>
