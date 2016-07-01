@@ -145,18 +145,14 @@ var myCanvas = (function() {
         clearCanvas();
     }
 
-    function activateMultipleBodiesMode(event) {
-        jQuery('.multipleBodiesButton').css({
-            'background-color': '#c55'
-        });
+    var $multipleBodies = $('.multipleBodiesButton');
+    function activateMultipleBodiesMode() {
+        $multipleBodies.addClass('is-active');
         myMatter.state.multipleBodiesMode = true;
     }
 
-    function deactivateMultipleBodiesMode(event) {
-        console.log("")
-        jQuery('.multipleBodiesButton').css({
-            'background-color': '#5c5'
-        });
+    function deactivateMultipleBodiesMode() {
+        $multipleBodies.removeClass('is-active');
         _numStrokes = 0;
         recognizeMultipleBodies();
         myMatter.state.multipleBodiesMode = false;
