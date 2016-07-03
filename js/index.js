@@ -2,6 +2,12 @@ var bodyFromMenu = undefined;
 var bodyPropertiesForBodyId = {};
 var lastScale = undefined;
 var bodyProperties = {};
+var yGravity = undefined;
+var xGravity = undefined;
+
+$(document).ready(function(){
+  initiaizeGravitySilders();
+});
 
 function showMenu(point, body) {
   bodyFromMenu = body;
@@ -113,4 +119,43 @@ function toggleLevelSelect() {
   if (myMatter.state.playMode == showLevelSelect) {
     togglePlay();
   }
+}
+
+function initiaizeGravitySilders() {
+  console.log('blup');
+
+  xGravity = $('#xGravity--slider').CircularSlider({
+    min: 0,
+    max: 359,
+    value: 180,
+    shape: "Half Circle",
+    innerCircleRatio: 0.9,
+    radius: 40,
+    formLabel : function(value, prefix, suffix) {
+        return '<span class="fa fa-arrows-h"></span>';
+    },
+    slide: function(ui, value){
+      setXGravity(value/180 - 1);
+    }
+  });
+
+  yGravity = $('#yGravity--slider').CircularSlider({
+    min: 0,
+    max: 359,
+    value: 359,
+    shape: "Half Circle",
+    innerCircleRatio: 0.9,
+    radius: 40,
+    formLabel : function(value, prefix, suffix) {
+        return '<span class="fa fa-arrows-v"></span>';
+    },
+    slide: function(ui, value){
+      setYGravity(value/180 - 1);
+    }
+  });
+}
+
+function setGravitySliders(xValue, yValue) {
+  xGravity.setValue(xValue);
+  yGravity.setValue(yValue);
 }

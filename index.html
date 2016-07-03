@@ -18,41 +18,6 @@
 <body onload="myCanvas.init()" onkeydown="myCanvas.checkForModeActivation(event)" onkeyup="myCanvas.checkForModeDeactivation(event)">
 <h1 class="headline">programmable matter</h1>
 
-<div class="global-menu">
-  <ul class="global-menu--properties menu-list">
-    <li>
-      <ul class="menu-list">
-        <li class="title fa fa-angle-right" onClick="toggleList(this)"> Gravity </li>
-        <li class="content">
-          <form  oninput="setXGravity(parseInt(xGravity.value) / 1000);">
-            <span> x </span>
-            <input class="global-menu--x-gravity" name="global-menu--x-gravity" id="xGravity" type="range" min="-1000" value="0" max="1000" orient="vertical" >
-            <output style="display: none" name="x" for="xGravity">1</output>
-          </form>
-        </li>
-        <li class="content">
-          <form  oninput="setYGravity(parseInt(yGravity.value) / 1000);">
-            <span> y </span>
-            <input class="global-menu--y-gravity" name="global-menu--y-gravity" id="yGravity" type="range" min="-1000" value="0" max="1000" orient="vertical" >
-            <output style="display: none" name="x" for="yGravity">1</output>
-          </form>
-        </li>
-        <li>
-          <ul class="menu-list">
-            <li class="title fa fa-angle-right" onClick="toggleList(this)"> Level </li>
-            <li class="content" onclick="myLevels.catapult()">
-              Catapult
-            </li>
-            <li class="content" onclick="myLevels.clearWorld()">
-              Empty Level
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
-
 <div class="drawable" id="canvas-container">
   <!-- draw -->
   <canvas id="myCanvas"
@@ -101,19 +66,31 @@
     </ul>
   </div>
 
-
   <div class="level-overlay">
-    <div class="level-option" onclick="toggleLevelSelect(); myLevels.catapult()">
+    <div class="level-option" onclick="toggleLevelSelect(); myLevels.catapult(); setGravitySliders(180, 359);">
       <img class="level-preview" src="./img/levels/catapult.png">
       Catapult
     </div>
-    <div class="level-option" onclick="toggleLevelSelect(); myLevels.clearWorld()">
+    <div class="level-option" onclick="toggleLevelSelect(); myLevels.clearWorld(); setGravitySliders(180, 359);">
       <div class="level-preview"></div>
       Empty
     </div>
   </div>
 </div>
 
+<div class="yGravity-control">
+  <div id="yGravity--slider"></div>
+  <div class="slider-text">
+      Set Y Gravity
+  </div>
+</div>
+
+<div class="xGravity-control">
+  <div id="xGravity--slider"></div>
+  <div class="slider-text">
+      Set X Gravity
+  </div>
+</div>
 
 <div class="play-control" onclick="togglePlay()">
   <button class="button button--play">
@@ -147,6 +124,8 @@
 
 <!-- scripts (vendor) -->
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<link rel="stylesheet" href="bower_components/jquery/dist/circular-slider.min.css" />
+<script type="text/javascript" src="bower_components/jquery/dist/circular-slider.min.js"></script>
 <script type="text/javascript" src="bower_components/Matter/build/matter.min.js"></script>
 <script type="text/javascript" src="bower_components/resurrect-js/resurrect.js"></script>
 <script type="text/javascript" src="js/ndollar.js"></script>
