@@ -29,7 +29,7 @@ body {
 }
 
 .multi-control {
-  bottom: 520px;
+  bottom: -30px;
 }
 
 .multipleBodiesButton {
@@ -42,7 +42,7 @@ body {
 }
 
 .level-control {
-  bottom: 540px;
+  bottom: -20px;
 }
 .level-control .button {
   font-size: 30px;
@@ -89,7 +89,7 @@ body {
 }
 
 .play-control {
-  bottom: 560px;
+  bottom: -10px;
 }
 .play-control .button {
   display: none;
@@ -143,7 +143,7 @@ body {
 }
 
 .xGravity-control {
-  bottom: 580px;
+  bottom: 0px;
 }
 .xGravity-control .fa {
   font-size: 30px;
@@ -151,7 +151,7 @@ body {
 }
 
 .yGravity-control {
-  bottom: 600px;
+  bottom: 10px;
 }
 .yGravity-control .fa {
   font-size: 30px;
@@ -172,7 +172,7 @@ body {
   text-align: center;
   position: relative;
   width: 800px;
-  height: 600px;
+  height: 0px;
   margin: auto;
 }
 .drawable canvas {
@@ -235,23 +235,23 @@ body {
 
 @media only screen and (max-width: 1200px) {
     .xGravity-control {
-      bottom: 91px;
+      bottom: -504px;
       left: 280px;
     }
     .yGravity-control {
-      bottom: -20px;
+      bottom: -615px;
       left: 140px;
     }
     .play-control {
       left: 420px;
-      bottom: 200px;
+      bottom: -396px;
     }
     .level-control {
-        bottom: 308px;
+        bottom: -288px;
         left: 560px;
     }
     .multi-control {
-      bottom: 416px;
+      bottom: -180px;
       left: 700px;
     }
 }
