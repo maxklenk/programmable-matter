@@ -9,7 +9,9 @@ var myLevels = (function() {
     addRightWall: addRightWall,
     addGround: addGround,
     addCeiling: addCeiling,
-    catapult: catapult
+    catapult: catapult,
+    newtonsCradle: newtonsCradle,
+    car: car
   };
 
   function clearWorld() {
@@ -47,6 +49,41 @@ var myLevels = (function() {
 
     // add all of the bodies to the world
     Matter.World.add(myMatter.world, elements);
+  }
+
+  function newtonsCradle() {
+    myLevels.clearWorld();
+
+    var cradle = Matter.Composites.newtonsCradle(280, 180, 7, 20, 140);
+    markCompoundAsMovable(cradle);
+    Matter.World.add(myMatter.world, cradle);
+    Matter.Body.translate(cradle.bodies[0], { x: -140, y: -100 });
+  }
+
+  function car() {
+    myLevels.clearWorld();
+
+    var scale = 0.9;
+    var car = Matter.Composites.car(150, 100, 100 * scale, 40 * scale, 30 * scale);
+    markCompoundAsMovable(car);
+    Matter.World.add(myMatter.world, car);
+
+    scale = 0.8;
+    car = Matter.Composites.car(350, 300, 100 * scale, 40 * scale, 30 * scale);
+    markCompoundAsMovable(car);
+    Matter.World.add(myMatter.world, car);
+
+    Matter.World.add(myMatter.world, [
+      Matter.Bodies.rectangle(200, 150, 650, 20, { isStatic: true, angle: Math.PI * 0.06 }),
+      Matter.Bodies.rectangle(500, 350, 650, 20, { isStatic: true, angle: -Math.PI * 0.06 }),
+      Matter.Bodies.rectangle(340, 580, 700, 20, { isStatic: true, angle: Math.PI * 0.04 })
+    ]);
+  }
+
+  function markCompoundAsMovable(compound) {
+    for (var index in compound.bodies) {
+      compound.bodies[index].isMoveable = true;
+    }
   }
 
   function addFourWalls(matter) {
