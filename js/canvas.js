@@ -5,8 +5,7 @@ var myCanvas = (function() {
         init: init,
         checkForModeActivation: checkForModeActivation,
         checkForModeDeactivation: checkForModeDeactivation,
-        activateMultipleBodiesMode: activateMultipleBodiesMode,
-        deactivateMultipleBodiesMode: deactivateMultipleBodiesMode,
+        toggleMultipleBodiesMode: toggleMultipleBodiesMode,
         mouseDownEvent: mouseDownEvent,
         mouseUpEvent: mouseUpEvent,
         mouseMoveEvent: mouseMoveEvent
@@ -146,17 +145,25 @@ var myCanvas = (function() {
     }
 
     var $multipleBodies = $('.multipleBodiesButton');
+    function toggleMultipleBodiesMode() {
+        if ($multipleBodies.hasClass('is-active')) {
+            deactivateMultipleBodiesMode();
+        } else {
+            activateMultipleBodiesMode();
+        }
+    }
+
     function activateMultipleBodiesMode() {
-        $multipleBodies.addClass('is-active');
         myMatter.state.multipleBodiesMode = true;
+        $multipleBodies.addClass('is-active');
     }
 
     function deactivateMultipleBodiesMode() {
-        $multipleBodies.removeClass('is-active');
         _numStrokes = 0;
         recognizeMultipleBodies();
         myMatter.state.multipleBodiesMode = false;
         drawFinished();
+        $multipleBodies.removeClass('is-active');
     }
 
     function checkForModeActivation(event) {
